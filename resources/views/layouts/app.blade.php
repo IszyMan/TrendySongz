@@ -408,21 +408,38 @@ ts
 }
 
 /* Aside */
+
 .ts-sidebar-content {
     position: sticky;
     top: 24px;
 }
 
 .ts-aside-section {
+    margin-bottom: 18px;
     padding: 20px;
     border: 1px solid #e7e7e1;
     border-radius: 12px;
     background: #fff;
 }
 
-.ts-aside-section h2 {
-    margin: 0 0 12px;
+.ts-aside-section .ts-sidebar-heading {
+    position: relative;
+    margin: 0 0 16px;
+    padding-left: 12px;
+    color: #222;
     font-size: 1rem;
+    line-height: 1.4;
+}
+
+.ts-aside-section .ts-sidebar-heading::before {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+    left: 0;
+    width: 3px;
+    border-radius: 3px;
+    background: #6b7228;
+    content: "";
 }
 
 .ts-aside-section ul {
@@ -442,6 +459,49 @@ ts
     font-size: .87rem;
     text-decoration: none;
 }
+
+.ts-aside-section a:hover {
+    color: #6b7228;
+}
+
+/* Artist links */
+
+.ts-aside-section .ts-aside-artist-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ts-aside-section .ts-aside-artist-list li,
+.ts-aside-section .ts-aside-artist-list li + li {
+    border: 0;
+}
+
+.ts-aside-section .ts-aside-artist-list a {
+    display: inline-block;
+    padding: 7px 11px;
+    border: 1px solid #dfe3ce;
+    border-radius: 20px;
+    background: #f7f8f2;
+    color: #4d5827;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.3;
+    text-decoration: none;
+}
+
+.ts-aside-section .ts-aside-artist-list a:hover {
+    border-color: #6b7228;
+    background: #eef1e3;
+    color: #343d25;
+}
+
+@media (max-width: 767px) {
+    .ts-sidebar-content {
+        position: static;
+    }
+}
+
 
 /* Cover placeholder used when an image is missing */
 .ts-music-cover,
@@ -6222,7 +6282,7 @@ ts
     border-bottom: 1px solid #e5e5e5;
 }
 
-.ts-artists-albums .ts-section-heading h2 {
+.ts-artists-albums .ts-section-heading h1 {
     margin: 0;
 
     font-size: 27px;
@@ -6239,10 +6299,11 @@ ts
 
 .ts-albums-subheading {
     margin: 6px 0 0;
-
+    text-align: left;
     font-size: 13px;
     line-height: 1.5;
     font-weight: 700;
+    align-items: flex-start;
 
     color: #777;
 }
@@ -6570,7 +6631,7 @@ ts
         padding-bottom: 10px;
     }
 
-    .ts-artists-albums .ts-section-heading h2 {
+    .ts-artists-albums .ts-section-heading h1 {
         font-size: 20px;
     }
 
@@ -13455,17 +13516,7 @@ SMALL PHONES
 }
 
 
-/* =========================================================
-   ADVERTISEMENT
-========================================================= */
 
-.ts-artist-ad {
-    width: 100%;
-
-    margin: 15px 0;
-
-    text-align: center;
-}
 
 
 /* =========================================================
@@ -14090,6 +14141,215 @@ SMALL PHONES
 }
 
 
+/*============================
+TS MUSIC NEWS DETAILS CSS
+=============================*/
+
+.ts-blog-page {
+    width: 100%;
+    min-width: 0;
+}
+
+.ts-blog-detail {
+    padding: 24px;
+    border: 1px solid #e7e7e7;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.ts-blog-title {
+    margin: 0 0 10px;
+    color: #222;
+    font-family: Georgia, Garamond, serif;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.25;
+}
+
+.ts-blog-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    color: #777;
+    font-size: 13px;
+}
+
+.ts-blog-featured-image {
+    margin: 22px 0;
+}
+
+.ts-blog-featured-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.ts-blog-intro {
+    margin: 20px 0;
+    padding: 10px 0 10px 16px;
+    border-left: 4px solid #6b7228;
+    font-weight: 700;
+}
+
+.ts-blog-body {
+    color: #333;
+    font-family: Georgia, Garamond, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    overflow-wrap: anywhere;
+}
+
+.ts-blog-intro {
+    font-weight: 700;
+}
+
+.ts-blog-body p {
+    margin: 0 0 18px;
+}
+
+.ts-blog-source {
+    margin: 24px 0 0;
+    color: #777;
+    font-size: 12px;
+}
+
+.ts-blog-related {
+    margin-top: 32px;
+}
+
+.ts-blog-related h2 {
+    margin: 0 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+.ts-blog-related-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ts-blog-related-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid #e7e7e7;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.ts-blog-related-card img {
+    width: 75px;
+    height: 75px;
+    flex: 0 0 75px;
+    object-fit: cover;
+}
+
+@media (max-width: 600px) {
+    .ts-blog-detail {
+        padding: 16px;
+    }
+
+    .ts-blog-intro,
+    .ts-blog-body {
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .ts-blog-related-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* == TS GENERAL PAGINATION ======= */
+
+.ts-pagination {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 28px auto;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.ts-pagination a,
+.ts-pagination span {
+    display: inline-flex;
+    min-width: 36px;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 10px;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    background: #fff;
+    color: #333;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.ts-pagination a:hover {
+    border-color: #6b7228;
+    color: #6b7228;
+}
+
+.ts-pagination .is-current {
+    border-color: #6b7228;
+    background: #6b7228;
+    color: #fff;
+}
+
+.ts-pagination .is-disabled {
+    color: #999;
+    cursor: default;
+}
+
+.ts-pagination .ts-pagination-ellipsis {
+    min-width: auto;
+    padding-inline: 3px;
+    border: 0;
+    background: transparent;
+}
+
+@media (max-width: 600px) {
+    .ts-pagination {
+        gap: 4px;
+    }
+
+    .ts-pagination a,
+    .ts-pagination span {
+        min-width: 32px;
+        min-height: 32px;
+        padding: 5px 7px;
+        font-size: 12px;
+    }
+}
+
+
+.ts-artists-page a.ts-popular-card,
+.ts-artists-page a.ts-artist-card,
+.ts-artists-page a.ts-popular-card:hover,
+.ts-artists-page a.ts-artist-card:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ts-artists-page .ts-popular-card *,
+.ts-artists-page .ts-artist-card * {
+    text-decoration: none;
+}
+
+
+
 
 
 </style>
@@ -14213,8 +14473,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     
             {{-- ALBUM / EP --}}
-            <a href="{{ route('pages.album') }}"
-               class="{{ strpos(Route::currentRouteName(), 'pages.album') === 0 ? 'active' : '' }}">
+            <a
+                href="{{ route('pages.album') }}"
+                class="{{ request()->routeIs('pages.album', 'pages.album_details') ? 'active' : '' }}"
+            >
                 <span>Album<br>/ EP</span>
             </a>
     
@@ -14234,8 +14496,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     
     
             {{-- MUSIC NEWS --}}
-            <a href="{{ route('pages.celebritynews_hot_gist') }}"
-               class="{{ strpos(Route::currentRouteName(), 'pages.celebritynews') === 0 ? 'active' : '' }}">
+            <a href="{{ route('pages.celebrity_news') }}"
+               class="{{ strpos(Route::currentRouteName(), 'pages.celebrity_news') === 0 ? 'active' : '' }}">
                 <span>Music<br>News</span>
             </a>
     

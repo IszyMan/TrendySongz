@@ -47,6 +47,10 @@
     <div class="ts-music-page">
         <header class="ts-music-page-heading">
             <h1>Latest Music</h1>
+
+            <time class="post-date" datetime="{{ now()->toDateString() }}">
+                {{ now()->format('M d, Y') }}
+            </time>
         </header>
 
         <div class="ts-music-list">

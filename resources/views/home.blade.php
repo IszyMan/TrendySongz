@@ -31,8 +31,9 @@
             <h1>Latest Nigerian Music</h1>
 
             <time datetime="{{ now()->toDateString() }}" class="post-date">
-                {{ now()->format('F j, Y') }}
+                {{ now()->format('M d, Y') }}
             </time>
+            
         </header>
 
         <section class="ts-section">            
@@ -115,7 +116,7 @@
             </div>
 
             <p class="ts-section-button">
-                <a href="{{ route('pages.celebritynews_hot_gist') }}">View all news →</a>
+                <a href="{{ route('pages.celebrity_news') }}">View all news →</a>
             </p>
         </section>
     </div>
