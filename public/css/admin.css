@@ -1,0 +1,396 @@
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #20251c;
+    background: #f5f6f1;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    color: #47551e;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+.admin-shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.admin-side {
+    padding: 22px 16px;
+    background: #202a17;
+    color: #fff;
+}
+
+.admin-brand {
+    display: block;
+    margin-bottom: 26px;
+    color: #fff;
+    font-size: 20px;
+    font-weight: 900;
+    text-decoration: none;
+}
+
+.admin-nav > a,
+.admin-nav details a,
+.admin-nav details span {
+    display: block;
+    padding: 10px 12px;
+    border-radius: 7px;
+    color: #e9f0da;
+    text-decoration: none;
+}
+
+.admin-nav details {
+    margin: 5px 0;
+}
+
+.admin-nav summary {
+    padding: 11px 12px;
+    cursor: pointer;
+    font-weight: 700;
+    list-style-position: inside;
+}
+
+.admin-nav details a {
+    padding-left: 31px;
+    font-size: 14px;
+}
+
+.admin-nav a:hover,
+.admin-nav a[aria-current="page"] {
+    background: #40532d;
+}
+
+.admin-nav .admin-pending {
+    padding-left: 31px;
+    color: #aeb8a3;
+    font-size: 13px;
+}
+
+.admin-content {
+    min-width: 0;
+    padding: 30px clamp(16px, 3vw, 44px);
+}
+
+.admin-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.admin-top p {
+    margin: 0;
+    color: #58614f;
+}
+
+h1 {
+    margin: 0 0 22px;
+    font-size: clamp(24px, 3vw, 32px);
+}
+
+.admin-panel {
+    margin-bottom: 18px;
+    padding: 22px;
+    border: 1px solid #e3e6dc;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+label {
+    display: grid;
+    gap: 6px;
+    font-weight: 700;
+}
+
+input:not([type="checkbox"]),
+select,
+textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    border: 1px solid #bfc8b5;
+    border-radius: 7px;
+    background: #fff;
+}
+
+textarea {
+    min-height: 110px;
+}
+
+.admin-wide {
+    grid-column: 1 / -1;
+}
+
+.admin-check {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.admin-button {
+    display: inline-block;
+    padding: 10px 17px;
+    border: 0;
+    border-radius: 7px;
+    background: #63712a;
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.admin-button:hover {
+    background: #4d591f;
+    color: #fff;
+    text-decoration: none;
+}
+
+.admin-button-secondary {
+    background: #e6eadb;
+    color: #344220;
+}
+
+.admin-button-secondary:hover {
+    background: #d7dfc7;
+    color: #344220;
+}
+
+.admin-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 16px;
+}
+
+.admin-toolbar input {
+    max-width: 260px;
+}
+
+.admin-alert {
+    margin-bottom: 16px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: #eaf2db;
+}
+
+.admin-error {
+    margin: 10px 0;
+    padding: 11px;
+    border-radius: 7px;
+    background: #fff0eb;
+    color: #933e27;
+}
+
+.admin-table-wrap {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e9ece4;
+    text-align: left;
+}
+
+.admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-actions form {
+    margin: 0;
+}
+
+
+
+.admin-logout {
+    border: 0;
+    background: none;
+    color: #43551d;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.admin-danger {
+    padding: 6px 10px;
+    border: 1px solid #aa3c3c;
+    border-radius: 6px;
+    background: #fff;
+    color: #962c2c;
+    cursor: pointer;
+}
+
+.admin-file-note {
+    margin: 6px 0 0;
+    color: #66705e;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+/* Login */
+
+body.admin-login-page {
+    display: grid;
+    min-height: 100vh;
+    place-items: center;
+    padding: 20px;
+    background: #f3f5ee;
+    color: #222;
+}
+
+.login-card {
+    width: min(100%, 420px);
+    padding: 35px;
+    border: 1px solid #e1e6d7;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 14px 42px #26331312;
+}
+
+.login-card h1 {
+    margin: 0 0 5px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.login-card p {
+    margin: 0 0 25px;
+    color: #66705e;
+    text-align: center;
+}
+
+.login-card label {
+    margin-bottom: 17px;
+}
+
+.login-card button {
+    width: 100%;
+}
+
+.login-logo {
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 18px;
+    object-fit: contain;
+}
+
+.login-error {
+    margin-bottom: 14px;
+    color: #a8322b;
+}
+
+@media (max-width: 760px) {
+    .admin-shell {
+        display: block;
+    }
+
+    .admin-side {
+        padding: 14px;
+    }
+
+    .admin-content {
+        padding: 20px 14px;
+    }
+
+    .admin-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/*==========================
+ PAGINATION
+ =========================*/
+
+.ts-list-pagination {
+    margin: 26px 0;
+}
+
+.ts-list-pagination .ts-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+}
+
+.ts-list-pagination .ts-pagination-page,
+.ts-list-pagination .ts-pagination-control {
+    display: inline-flex;
+    min-width: 38px;
+    min-height: 38px;
+    align-items: center;
+    justify-content: center;
+    padding: 7px 10px;
+    border: 1px solid #d8dfce;
+    border-radius: 6px;
+    background: #fff;
+    color: #43521e;
+    font-size: 13px;
+    line-height: 1;
+    text-decoration: none;
+}
+
+.ts-list-pagination .ts-pagination-page.is-current {
+    border-color: #63712a;
+    background: #63712a;
+    color: #fff;
+}
+
+.ts-list-pagination .ts-pagination-control.is-disabled {
+    color: #999;
+}
+
+.ts-list-pagination .ts-pagination-ellipsis {
+    padding: 0 3px;
+    font-size: 13px;
+}
+
+.ts-list-pagination svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+.admin-nav a.active,
+.admin-nav a[aria-current="page"] {
+    background: #63712a;
+    color: #fff;
+    font-weight: 800;
+}
+
+.admin-nav details:has(a.active) > summary {
+    color: #fff;
+}

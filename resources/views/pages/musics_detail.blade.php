@@ -77,6 +77,32 @@
 @endsection
 
 @section('content')
+
+    @php
+        $trackUrl = trim((string) ($artist->TrackUrl ?? ''));
+        $mediaUrl = null;
+
+        if (
+            $trackUrl !== ''
+            && basename($trackUrl) === $trackUrl
+            && ! str_contains($trackUrl, '\\')
+        ) {
+            $path = 'media/audio/'.$trackUrl;
+
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                $mediaUrl = asset('storage/'.$path);
+            }
+        } elseif (str_starts_with($trackUrl, 'storage/media/audio/')) {
+            // Supports listings uploaded before this filename-only change.
+            $path = substr($trackUrl, strlen('storage/'));
+
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                $mediaUrl = asset($trackUrl);
+            }
+        }
+    @endphp
+
+
     <div class="ts-music-detail">
 
         <header class="ts-music-header">
@@ -180,26 +206,54 @@
                     </div>
 
                     <div class="ts-audio-box">
-                        <button type="button"
+                        @if ($mediaUrl)
+                            <button
+                                type="button"
                                 class="ts-main-play"
+                                id="ts-track-play"
                                 aria-label="Play {{ $title }}"
-                                title="Audio file awaiting restoration"
-                                disabled>
-                            <i class="fa fa-play" aria-hidden="true"></i>
-                        </button>
+                            >
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </button>
+
+                            <audio
+                                id="ts-track-audio"
+                                src="{{ $mediaUrl }}"
+                                preload="none"
+                            ></audio>
+                        @else
+                            <button
+                                type="button"
+                                class="ts-main-play"
+                                aria-label="Audio unavailable"
+                                disabled
+                            >
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        @endif
 
                         <span class="ts-audio-heading">
                             Listen to {{ $artistName }} - {{ $artist->TrackTitle }} Here
                         </span>
                     </div>
 
-                    <button type="button"
+                    @if ($mediaUrl)
+                        <a
                             class="ts-download-button"
-                            title="Download available when the audio file is restored"
-                            disabled>
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                        Download {{ $artist->TrackTitle }} Mp3
-                    </button>
+                            href="{{ $mediaUrl }}"
+                            download="{{ \Illuminate\Support\Str::slug($title) }}.mp3"
+                        >
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            Download {{ $artist->TrackTitle }} Mp3
+                        </a>
+                    @else
+                        <button type="button" class="ts-download-button" disabled>
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            Download {{ $artist->TrackTitle }} Mp3
+                        </button>
+                    @endif
+
+                    
                 </div>
             </div>
         </section>
@@ -216,6 +270,7 @@
                             $artist->introduction,
                             $artist->TrackInfo,
                             $artist->trackinfo1,
+                            $artist->trackinfo2,
                         ] as $paragraph)
                             @if ($paragraph)
                                 <p>{{ strip_tags($paragraph) }}</p>
@@ -294,9 +349,37 @@
                     @endforeach
                 </div>
             </section>
-        @endif
-
-     
+        @endif     
 
     </div>
+
+
+    @if ($mediaUrl)
+        <script>
+            const audio = document.getElementById('ts-track-audio');
+            const playButton = document.getElementById('ts-track-play');
+            const playIcon = playButton.querySelector('i');
+
+            playButton.addEventListener('click', function () {
+                if (audio.paused) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+
+            audio.addEventListener('play', function () {
+                playIcon.classList.replace('fa-play', 'fa-pause');
+                playButton.setAttribute('aria-label', 'Pause {{ $title }}');
+            });
+
+            function showPlayIcon() {
+                playIcon.classList.replace('fa-pause', 'fa-play');
+                playButton.setAttribute('aria-label', 'Play {{ $title }}');
+            }
+
+            audio.addEventListener('pause', showPlayIcon);
+            audio.addEventListener('ended', showPlayIcon);
+        </script>
+    @endif
 @endsection

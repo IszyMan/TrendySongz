@@ -14350,7 +14350,11 @@ TS MUSIC NEWS DETAILS CSS
 
 
 
-
+.ts-music-detail .ts-download-button,
+.ts-music-detail .ts-download-button:hover,
+.ts-music-detail .ts-download-button:focus {
+    text-decoration: none;
+}
 
 </style>
 

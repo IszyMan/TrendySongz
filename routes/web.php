@@ -26,3 +26,9 @@ Route::get('/search', [PagesController::class, 'search'])->name('pages.search');
 
 Route::get('/videos/posted-by/{slug}', [PagesController::class, 'videos_posted_by'])->name('pages.videos_posted_by');
 Route::get('/{year}/videos',[PagesController::class, 'videos_released_year'])->whereNumber('year')->name('pages.videos_released_year');
+
+require __DIR__.'/admin.php';
+
+
+
+
