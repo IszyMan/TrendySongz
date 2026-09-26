@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', $dj->dj_name . ' Mixtapes | TrendySongz')
+@section('content')<div class="ts-djmix-page"><header class="ts-section-heading"><h1>{{ $dj->dj_name }} Mixtapes</h1></header><div class="ts-dj-profile"><div class="ts-djmix-cover">@include('pages.partials.cover', ['src'=>$dj->photo,'folder'=>'dj/'])</div><div><h2>{{ $dj->dj_name }}</h2><p>All mixtapes by {{ $dj->dj_name }}</p></div></div><div class="ts-djmix-list">@forelse($mixes as $row)@include('pages.partials.mix-card')@empty<p>No mixtapes found.</p>@endforelse</div></div>@endsection

@@ -1,0 +1,3 @@
+@extends('layouts.app')
+@section('title', $row->mix_title . ' | TrendySongz')
+@section('content')<div class="ts-djmix-page"><header class="ts-section-heading"><h1>{{ $row->mix_title }}</h1></header><div class="ts-djmix-detail-card"><div class="ts-djmix-cover">@include('pages.partials.cover', ['src'=>$row->cover_url,'folder'=>'dj/'])</div><div class="ts-djmix-info"><span class="ts-djmix-label">Mixtape</span><h2 class="ts-djmix-title">{{ $row->mix_title }}</h2>@if($row->released_year)<p>Released {{ $row->released_year }}</p>@endif</div></div>@if($row->details)<section class="ts-section"><h2>About this mix</h2><p>{{ $row->details }}</p></section>@endif<p class="ts-detail-media-note">Audio file awaiting restoration.</p></div>@endsection
