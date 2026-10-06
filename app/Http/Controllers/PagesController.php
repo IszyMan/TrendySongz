@@ -27,9 +27,11 @@ class PagesController extends Controller
         $music = $this->tracks('audio')->orderByDesc('l.id')->limit(12)->get();
         $videos = $this->tracks('video')->orderByDesc('l.id')->limit(8)->get();
 
-        $albums = DB::table('albums')
-            ->where('IsPublished', 'YES')
-            ->orderByDesc('id')
+        $albums = DB::table('albums as al')
+            ->leftJoin('artists as a', 'a.Artists_Id', '=', 'al.artist_id')
+            ->select('al.*', 'a.ArtistsName', 'a.Stage_Name')
+            ->where('al.IsPublished', 'YES')
+            ->orderByDesc('al.id')
             ->limit(8)
             ->get();
 
@@ -157,10 +159,12 @@ class PagesController extends Controller
             ->limit(6)
             ->get();
 
-        $artistAlbums = DB::table('albums')
-            ->where('IsPublished', 'YES')
-            ->where('artist_id', $artist->Artists_Id)
-            ->orderByDesc('id')
+        $artistAlbums = DB::table('albums as al')
+            ->leftJoin('artists as a', 'a.Artists_Id', '=', 'al.artist_id')
+            ->select('al.*', 'a.ArtistsName', 'a.Stage_Name')
+            ->where('al.IsPublished', 'YES')
+            ->where('al.artist_id', $artist->Artists_Id)
+            ->orderByDesc('al.id')
             ->limit(6)
             ->get();
 
@@ -200,6 +204,41 @@ class PagesController extends Controller
             'latestVideos'
         ));
     }
+
+
+    public function songs_posted_by(string $slug)
+    {
+        $poster = DB::table('users')
+            ->get(['id', 'name'])
+            ->first(fn ($user) => Str::slug($user->name) === $slug);
+
+        abort_unless($poster, 404);
+
+        $rows = $this->tracks('audio')
+            ->where('l.posted_by', $poster->id)
+            ->orderByDesc('l.id')
+            ->paginate(24);
+
+        return view('pages.songs_posted_by', compact('poster', 'rows'));
+    }
+
+
+
+    public function songs_released_year(string $year)
+    {
+        abort_unless(preg_match('/^\d{4}$/', $year) === 1, 404);
+
+        $rows = $this->tracks('audio')
+            ->where('l.YearOfRelease', $year)
+            ->orderByDesc('l.id')
+            ->paginate(24);
+
+        return view('pages.songs_year', compact('rows', 'year'));
+    }
+
+
+
+
 
     public function videoDetail(int $id)
     {
@@ -336,21 +375,76 @@ class PagesController extends Controller
                 'al.*',
                 'a.ArtistsName',
                 'a.Stage_Name',
+                'a.country_id as artist_country_id',
                 'u.name as posted_by_name'
             )
             ->where('al.IsPublished', 'YES')
             ->where('al.id', $id)
             ->first();
-
+    
         abort_unless($album, 404);
-
+    
         $tracks = $this->tracks('audio')
             ->where('l.album_id', $id)
             ->orderBy('l.track_number')
             ->orderBy('l.id')
             ->get();
-
+    
         return view('pages.album_details', compact('album', 'tracks'));
+    }
+
+
+    public function albums_released_year(string $year)
+    {
+        $albums = DB::table('albums as al')
+            ->leftJoin('artists as a', 'a.Artists_Id', '=', 'al.artist_id')
+            ->select(
+                'al.*',
+                'a.ArtistsName',
+                DB::raw(
+                    "(SELECT COUNT(*)
+                    FROM listing AS l
+                    WHERE l.album_id = al.id
+                        AND l.ListingType = 'audio'
+                        AND l.IsPublished = 'YES') AS track_count"
+                )
+            )
+            ->where('al.IsPublished', 'YES')
+            ->where('al.released_year', $year)
+            ->orderByDesc('al.id')
+            ->paginate(20);
+
+        return view('pages.albums_year', compact('albums', 'year'));
+    }
+
+
+    public function albums_posted_by(string $slug)
+    {
+        $poster = DB::table('users')
+            ->get(['id', 'name'])
+            ->first(fn ($user) => Str::slug($user->name) === $slug);
+
+        abort_unless($poster, 404);
+
+        $albums = DB::table('albums as al')
+            ->leftJoin('artists as a', 'a.Artists_Id', '=', 'al.artist_id')
+            ->select(
+                'al.*',
+                'a.ArtistsName',
+                DB::raw(
+                    "(SELECT COUNT(*)
+                    FROM listing AS l
+                    WHERE l.album_id = al.id
+                        AND l.ListingType = 'audio'
+                        AND l.IsPublished = 'YES') AS track_count"
+                )
+            )
+            ->where('al.IsPublished', 'YES')
+            ->where('al.posted_by', $poster->id)
+            ->orderByDesc('al.id')
+            ->paginate(20);
+
+        return view('pages.albums_posted_by', compact('albums', 'poster'));
     }
 
     public function djmix()

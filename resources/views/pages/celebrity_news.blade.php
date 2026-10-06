@@ -82,7 +82,7 @@
                 @endphp
 
                 <article class="ts-music-news-card">
-                    <a class="ts-music-news-card-link" href="{{ $postUrl }}">
+                    <a class="ts-music-news-card-link" href="{{ \App\Support\BlogUrl::detail($row) }}">
                         @if ($row->photo)
                             <span class="ts-music-news-image">
                                 <img

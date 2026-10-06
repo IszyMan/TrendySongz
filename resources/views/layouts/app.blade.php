@@ -19,6 +19,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   gtag('config', 'UA-206782461-1');
 </script>
 
+<!-- Default Statcounter code for TrendySongz
+http://trendysongz.com -->
+<script type="text/javascript">
+var sc_project=13357412; 
+var sc_invisible=1; 
+var sc_security="1b074ead"; 
+var sc_remove_link=1; 
+</script>
+<script type="text/javascript"
+src="https://www.statcounter.com/counter/counter.js"
+async></script>
+<noscript><div class="statcounter"><img class="statcounter"
+src="https://c.statcounter.com/13357412/0/1b074ead/1/"
+alt="Web Analytics"
+referrerPolicy="no-referrer-when-downgrade"></div></noscript>
+<!-- End of Statcounter Code -->
+
 
 
 <!-- This is pinterest verification code -->
@@ -37,6 +54,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
   <link rel="stylesheet" href="{{ asset('/awesome-fonts/w3.css') }}">
   <link rel="stylesheet" href="{{ asset('/css/comment.css') }}">
+  <script src="{{ asset('js/comments.js') }}?v=3" defer></script>
   
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -6470,6 +6488,21 @@ ts
     margin-left: 2px;
 }
 
+.ts-artist-album-cover .ts-cover-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.ts-artist-album-cover img {
+    position: relative;
+    z-index: 1;
+}
+
+.ts-artist-album-cover-overlay {
+    z-index: 2;
+}
+
 
 /* ============================================================
    ALBUM DETAILS
@@ -9406,45 +9439,64 @@ SMALL PHONES
 
 /* Title and posting details */
 
-.ts-music-detail .ts-music-header {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    flex-direction: column;
-    align-items: stretch;
-    margin: 0;
-    padding: 0 0 12px;
+.ts-music-header {
+    padding: 0 0 16px;
+    text-align: left;
 }
 
-.ts-music-detail .ts-music-title {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    margin: 0 0 7px;
+.ts-music-title {
+    margin: 15px 0 0;
     color: #222;
-    font-size: clamp(20px, 2.5vw, 29px);
+    font-size: 29px;
+    line-height: 1.2;
     font-weight: 700;
-    line-height: 1.25;
     overflow-wrap: break-word;
 }
 
-.ts-music-detail .ts-music-meta {
-    display: flex;
-    width: 100%;
-    min-width: 0;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 3px 8px;
-    margin: 0;
-    color: #666;
-    font-size: 13px;
-    line-height: 1.4;
+.ts-music-featuring {
+    font-weight: 400;
+    color: #6b7228;
 }
 
-.ts-music-detail .ts-meta-separator,
-.ts-music-detail .ts-music-date {
+.ts-music-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 7px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.4;
+    justify-content: flex-start;
+}
+
+.ts-music-posted-by {
+    color: #333;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.ts-music-posted-by:hover {
+    color: #6b7228;
+}
+
+.ts-music-posted-by strong {
+    color: #333;
+}
+
+.ts-music-posted-by i {
+    margin-left: 3px;
+    color: #2d99d7;
+}
+
+.ts-music-meta-separator {
+    color: #aaa;
+}
+
+.ts-music-date {
     color: #777;
 }
+
 
 /* Main card */
 
@@ -9576,6 +9628,8 @@ SMALL PHONES
     font-size: 20px;
     font-weight: 800;
     line-height: 1.2;
+    color: inherit;
+    text-decoration: none;
     overflow-wrap: anywhere;
 }
 
@@ -9667,6 +9721,13 @@ SMALL PHONES
     cursor: not-allowed;
 }
 
+.ts-music-content .ts-song-artist a,
+.ts-music-content .ts-song-artist a:hover,
+.ts-music-content .ts-song-artist a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
 /* About the song */
 
 .ts-music-detail .ts-about-song {
@@ -9682,8 +9743,9 @@ SMALL PHONES
     width: fit-content;
     margin: 0 auto 16px;
     padding: 0 12px 5px;
-    border-bottom: 2px solid olive;
+    border-bottom: 3px solid olive;
     text-align: center;
+    text-transform: uppercase;
 }
 
 .ts-music-detail .ts-about-text {
@@ -11923,6 +11985,7 @@ SMALL PHONES
 .ts-album-detail-posted-by {
     color: #6b7228;
     font-weight: 600;
+    text-decoration: none;
 }
 
 .ts-album-detail-meta-separator {
@@ -11938,43 +12001,50 @@ SMALL PHONES
 ============================================================ */
 
 .ts-album-detail-info-bar {
-    width: 100%;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 1px;
     margin: 0 0 14px;
+    overflow: hidden;
     border: 1px solid #e1e1e1;
     border-radius: 5px;
-    overflow: hidden;
     background: #e1e1e1;
 }
 
 .ts-album-detail-info-item {
     min-width: 0;
     padding: 9px 8px;
-    text-align: center;
-    background: #fff;
     box-sizing: border-box;
+    background: #fff;
+    text-align: center;
 }
 
 .ts-album-detail-info-label {
     display: block;
     margin-bottom: 2px;
-    font-size: 10px;
-    line-height: 1.3;
-    font-weight: 400;
     color: #888;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 1.3;
     text-transform: uppercase;
 }
 
 .ts-album-detail-info-value {
     display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: olive;
     font-size: 13px;
+    font-weight: 600;
     line-height: 1.3;
-    font-weight: 500;
-    color: #333;
+    text-decoration: none;
 }
 
+.ts-album-detail-info-value a {
+    color: inherit;
+    text-decoration: none;
+}
 /* ============================================================
    ALBUM HERO
 ============================================================ */
@@ -12052,6 +12122,18 @@ SMALL PHONES
 .ts-album-detail-meta-value {
     color: #333;
     font-weight: 500;
+}
+
+.ts-album-detail-artist a,
+.ts-album-detail-artist a:hover,
+.ts-album-detail-artist a:visited {
+    color: inherit;
+    text-decoration: none;
+}
+
+.ts-album-detail-info-value a,
+a.ts-album-detail-info-value {
+    text-decoration: none;
 }
 
 /* ============================================================
@@ -12409,7 +12491,7 @@ SMALL PHONES
     }
 
     .ts-album-detail-info-item {
-        padding: 7px 4px;
+        padding: 7px 2px;
     }
 
     .ts-album-detail-info-label {
@@ -13497,6 +13579,49 @@ SMALL PHONES
     margin-left: 0;
     font-size: 14px;
     text-align: left;
+    padding-right: 14px;
+}
+
+
+
+.ts-artist-single-cover {
+    position: relative;
+    display: block;
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #eee;
+    margin-right: 12px;
+}
+
+.ts-artist-single-cover .ts-cover-placeholder {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.ts-artist-single-cover img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ts-artist-single .ts-artist-track-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.ts-featured-song-artist {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
 }
 
 
@@ -14356,8 +14481,563 @@ TS MUSIC NEWS DETAILS CSS
     text-decoration: none;
 }
 
-</style>
 
+/*==============================
+ADD TO ANY CSS
+=============================*/
+.ts-share-block {
+    margin: 22px 0;
+    padding: 18px 10px;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.ts-share-block .ts-share-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+    color: olive;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.3;
+    letter-spacing: 2px;
+}
+
+.ts-share-heading::before,
+.ts-share-heading::after {
+    content: "";
+    width: 55px;
+    height: 1px;
+    background: #d8d8d8;
+}
+
+.ts-share-block .ts-share-description {
+    margin: 0 0 14px;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+.ts-share-actions,
+.ts-share-socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ts-share-copy {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 8px 12px;
+    border: 1px solid olive;
+    border-radius: 4px;
+    background: olive;
+    color: #fff;
+    font: 700 12px/1.2 Arial, sans-serif;
+    cursor: pointer;
+}
+
+.ts-share-copy svg {
+    width: 15px;
+    height: 15px;
+}
+
+.ts-share-copy:hover {
+    background: #686800;
+    border-color: #686800;
+}
+
+.ts-share-copy:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+.ts-share-block .ts-share-socials > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    float: none;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1px solid #dedede;
+    border-radius: 50%;
+    background: transparent;
+    text-decoration: none;
+    box-sizing: border-box;
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease;
+}
+
+.ts-share-block .ts-share-socials > a:hover {
+    background: #f5f5f5;
+    border-color: #aaa;
+}
+
+.ts-share-block .ts-share-socials .a2a_svg {
+    width: 19px !important;
+    height: 19px !important;
+    border-radius: 0 !important;
+    background-color: transparent !important;
+}
+
+/* Social brand colors */
+.ts-share-socials .a2a_button_facebook {
+    --share-brand: #1877f2;
+}
+
+.ts-share-socials .a2a_button_whatsapp {
+    --share-brand: #25d366;
+}
+
+.ts-share-socials .a2a_button_x,
+.ts-share-socials .a2a_button_threads {
+    --share-brand: #000;
+}
+
+.ts-share-socials .a2a_button_twitter {
+    --share-brand: #1da1f2;
+}
+
+.ts-share-socials .a2a_button_telegram {
+    --share-brand: #0088cc;
+}
+
+.ts-share-socials .a2a_button_linkedin {
+    --share-brand: #0a66c2;
+}
+
+.ts-share-socials .a2a_button_pinterest {
+    --share-brand: #e60023;
+}
+
+.ts-share-socials .a2a_button_reddit {
+    --share-brand: #ff4500;
+}
+
+.ts-share-socials .a2a_button_email {
+    --share-brand: #666;
+}
+
+.ts-share-socials .a2a_button_copy_link {
+    --share-brand: #555;
+}
+
+.ts-share-socials .a2a_dd {
+    --share-brand: #0166ff;
+}
+
+.ts-share-block .ts-share-socials .a2a_svg svg path {
+    fill: var(--share-brand, #555) !important;
+}
+
+.ts-share-copy:focus-visible,
+.ts-share-socials > a:focus-visible {
+    outline: 2px solid #555;
+    outline-offset: 3px;
+}
+
+.ts-share-block .ts-share-status {
+    margin: 7px 0 0;
+    color: olive;
+    font-size: 11px;
+}
+
+.ts-share-status:empty {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    .ts-share-actions,
+    .ts-share-socials {
+        gap: 7px;
+    }
+
+    .ts-share-heading::before,
+    .ts-share-heading::after {
+        width: 35px;
+    }
+
+    .ts-share-block .ts-share-description {
+        font-size: 12px;
+    }
+}
+
+
+
+/* Public comments */
+
+.ts-comments {
+    margin: 28px 0;
+    color: #202b23;
+    font: 14px/1.6 Arial, sans-serif;
+    text-align: left;
+}
+
+.ts-comments,
+.ts-comments * {
+    box-sizing: border-box;
+}
+
+.ts-comments [hidden] {
+    display: none !important;
+}
+
+.ts-comments-header {
+    padding-bottom: 14px;
+    border-bottom: 1px solid #e6ebe7;
+}
+
+.ts-comments-eyebrow {
+    color: #7b857c;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+}
+
+.ts-comments .ts-comments-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 5px 0 0;
+    padding: 0;
+    border: 0;
+    color: #202b23;
+    font: 700 21px/1.3 Arial, sans-serif;
+}
+
+.ts-comments-header h2 span {
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #eef5ef;
+    color: #4e7056;
+    font-size: 12px;
+}
+
+.ts-comments-list {
+    margin-bottom: 24px;
+}
+
+.ts-comment {
+    display: flex;
+    gap: 12px;
+    padding: 18px 0;
+    border-bottom: 1px solid #edf0ed;
+}
+
+.ts-comment-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #edf5ee;
+    color: #40734e;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ts-comment-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.ts-comment-meta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ts-comment-meta strong {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.ts-comment-meta time {
+    color: #8a928b;
+    font-size: 10px;
+}
+
+.ts-comments .ts-comment-content > p {
+    margin: 6px 0 0;
+    color: #465148;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* Separate red heart and count */
+
+.ts-comment-reactions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+.ts-comment-like {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 27px;
+    height: 27px;
+    padding: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #e53945;
+    cursor: pointer;
+}
+
+.ts-comment-like svg {
+    width: 17px;
+    height: 17px;
+}
+
+.ts-comment-like:hover {
+    background: #fff0f1;
+}
+
+.ts-comment-like.ts-has-liked svg {
+    fill: currentColor;
+}
+
+.ts-comment-like:disabled {
+    cursor: default;
+}
+
+.ts-comment-like:disabled:not(.ts-has-liked) {
+    opacity: 0.55;
+}
+
+.ts-comment-like:focus-visible {
+    outline: 2px solid #e53945;
+    outline-offset: 2px;
+}
+
+.ts-comment-like-count {
+    min-width: 12px;
+    color: #7d877e;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.ts-comment-like-error {
+    flex-basis: 100%;
+    color: #b52d36;
+    font-size: 11px;
+}
+
+.ts-comments .ts-comments-empty {
+    margin: 0;
+    padding: 20px 0;
+    color: #7a857b;
+    font-size: 13px;
+}
+
+/* Public pagination */
+
+.ts-comments-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+    font-size: 12px;
+}
+
+.ts-comments-pagination a {
+    color: #168044;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+/* Comment form */
+
+.ts-comment-form {
+    position: relative;
+    padding: 22px;
+    border: 1px solid #e0e7df;
+    border-radius: 14px;
+    background: #fafcf9;
+}
+
+.ts-comments .ts-comment-form h3 {
+    margin: 0 0 5px;
+    padding: 0;
+    border: 0;
+    color: #202b23;
+    font: 700 17px/1.4 Arial, sans-serif;
+}
+
+.ts-comments .ts-comment-intro {
+    margin: 0 0 18px;
+    color: #6d786d;
+    font-size: 12px;
+}
+
+.ts-comment-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ts-comment-form label {
+    display: block;
+    margin: 14px 0 0;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.ts-comment-optional {
+    color: #899187;
+    font-size: 11px;
+    font-weight: 400;
+}
+
+.ts-comment-form input,
+.ts-comment-form textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 6px;
+    padding: 11px 12px;
+    border: 1px solid #d9e2d8;
+    border-radius: 8px;
+    background: #fff;
+    color: #202b23;
+    box-shadow: none;
+    font: 14px/1.5 Arial, sans-serif;
+}
+
+.ts-comment-form textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.ts-comment-form input:focus,
+.ts-comment-form textarea:focus {
+    border-color: #6ba97d;
+    outline: 2px solid #c2dec9;
+    outline-offset: 2px;
+}
+
+.ts-comment-form [aria-invalid="true"] {
+    border-color: #c24141;
+}
+
+.ts-comment-trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.ts-comment-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.ts-comments .ts-comment-footer p {
+    flex: 1;
+    margin: 0;
+    color: #7a8479;
+    font-size: 11px;
+}
+
+.ts-comment-footer button {
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: olive;
+    color: #fff;
+    font: 700 12px/1.5 Arial, sans-serif;
+    cursor: pointer;
+}
+
+.ts-comment-footer button:hover {
+    background: #686800;
+}
+
+.ts-comment-footer button:focus-visible {
+    outline: 2px solid olive;
+    outline-offset: 3px;
+}
+
+.ts-comment-feedback {
+    margin-top: 16px;
+    padding: 11px 13px;
+    border: 1px solid #cce3d0;
+    border-radius: 8px;
+    background: #edf7ee;
+    color: #27623a;
+    font-size: 12px;
+    white-space: pre-line;
+}
+
+.ts-comment-feedback[data-state="error"] {
+    border-color: #efcccc;
+    background: #fff2f2;
+    color: #a32c2c;
+}
+
+.ts-comments .ts-comment-feedback p {
+    margin: 0 0 4px;
+    font-size: 12px;
+}
+
+/* Public mobile styles */
+
+@media (max-width: 480px) {
+    .ts-comments {
+        margin: 24px 0;
+    }
+
+    .ts-comment-form {
+        padding: 16px;
+    }
+
+    .ts-comment-fields {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .ts-comment-footer p {
+        flex-basis: 100%;
+    }
+
+    .ts-comments .ts-comments-header h2 {
+        font-size: 20px;
+    }
+}
+
+
+</style>
+<script data-cfasync="false" src="//d2f9q8zryik75d.cloudfront.net/?rzqfd=1724803"></script>
 
 
 

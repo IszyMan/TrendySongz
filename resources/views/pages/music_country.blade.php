@@ -62,19 +62,20 @@
             @forelse ($rows as $row)
                 <article class="ts-music-list-item">
                     <a class="ts-music-list-link"
-                       href="{{ route('pages.musics_detail', [
-                           $row->id,
-                           \Illuminate\Support\Str::slug(
-                               ($row->ArtistsName ?? '') . ' ' . $row->TrackTitle
-                           ),
-                       ]) }}">
+                       href="{{ \App\Support\ListingUrl::musicDetail($row) }}">
 
                         <span class="ts-music-list-cover">
-                            @include('pages.partials.cover', [
-                                'src' => $row->CoverUrl,
-                                'folder' => '',
-                            ])
+                            @if ($row->CoverUrl)
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                    alt="{{ $row->TrackTitle ?? 'Music cover' }}"
+                                    onerror="this.remove()"
+                                >
+                            @endif
+                            <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
                         </span>
+
 
                         <span class="ts-music-list-info">
                             <span class="ts-music-list-artist">
@@ -100,8 +101,10 @@
             @endforelse
         </div>
 
-        <div class="ts-list-pagination">
-            {{ $rows->links() }}
-        </div>
+        @if ($rows->hasPages())
+            <div class="ts-list-pagination">
+                {{ $rows->links('vendor.pagination.trendysongz') }}
+            </div>
+        @endif
     </div>
 @endsection

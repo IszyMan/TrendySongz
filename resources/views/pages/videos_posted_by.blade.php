@@ -53,8 +53,8 @@
             @endforelse
         </div>
 
-        <div class="ts-video-pagination">
-            {{ $videos->links() }}
+        <div class="ts-list-pagination">
+            {{ $rows->links('vendor.pagination.trendysongz') }}
         </div>
     </div>
 @endsection

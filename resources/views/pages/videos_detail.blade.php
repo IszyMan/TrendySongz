@@ -89,12 +89,12 @@
                     <span class="ts-video-detail-meta-separator">•</span>
 
                     <time
-                        class="ts-video-detail-date"
-                        datetime="{{ \Illuminate\Support\Carbon::parse($artist->created_at)->toDateString() }}"
+                        class="ts-music-date"
+                        datetime="{{ now()->toDateString() }}" class="post-date"
                     >
-                        {{ \Illuminate\Support\Carbon::parse($artist->created_at)->format('M d, Y') }}
+                                        {{ now()->format('M d, Y') }}
                     </time>
-                @endif
+                    @endif
             </div>
         </header>
 
@@ -187,9 +187,9 @@
 
         @if ($artist->TrackInfo || $artist->trackinfo1)
             <section class="ts-video-detail-section ts-video-detail-information">
-                <h2 class="ts-video-detail-section-heading">
+              <!--  <h2 class="ts-video-detail-section-heading">
                     Video information
-                </h2>
+                </h2>-->
 
                 @if ($artist->TrackInfo)
                     <div class="ts-video-detail-info-text">
@@ -229,6 +229,12 @@
                 </a>
             </section>
         @endif
+        
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\ListingUrl::detail($artist),
+            'shareTitle' => $title,
+        ])
 
         @if ($video->isNotEmpty())
             <section class="ts-video-detail-section ts-video-detail-related">
@@ -275,6 +281,9 @@
                 </div>
             </section>
         @endif
+        
+        
+        
 
         @if ($audio->isNotEmpty())
             <section class="ts-related-section ts-video-detail-related">
@@ -405,4 +414,10 @@
         @endif
 
     </div>
+    
+    @include('pages.partials.comments', [
+        'postType' => 'video',
+        'postId' => (int) $artist->id,
+        'postTitle' => $videoTitle,
+    ])
 @endsection

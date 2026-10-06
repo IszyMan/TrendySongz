@@ -18,10 +18,7 @@
         'Download ' . $albumName . ' ' . $descriptionText
     );
 
-    $canonicalUrl = route('pages.album_details', [
-        $album->id,
-        \Illuminate\Support\Str::slug($albumName),
-    ]);
+    $canonicalUrl = \App\Support\AlbumUrl::detail($album);
 
     $coverUrl = $album->cover_url
         ? asset('images/' . ltrim($album->cover_url, '/'))
@@ -70,19 +67,28 @@
 
             <div class="ts-album-detail-post-meta">
                 <span class="ts-album-detail-posted-by">
-                    Posted by:
-                    {{ $album->posted_by_name ?: 'TrendySongz' }}
-                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    <a
+                        class="ts-album-detail-posted-by"
+                        href="{{ route(
+                            'pages.albums_posted_by',
+                            \Illuminate\Support\Str::slug($album->posted_by_name ?: 'Wilfred Moses')
+                        ) }}"
+                    >
+                        Posted by:
+                        {{ $album->posted_by_name ?: 'TrendySongz' }}
+                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    </a>
+                    
                 </span>
 
                 @if ($album->created_at)
                     <span class="ts-album-detail-meta-separator">•</span>
 
                     <time
-                        class="ts-album-detail-date"
-                        datetime="{{ \Illuminate\Support\Carbon::parse($album->created_at)->toDateString() }}"
+                        class="ts-music-date"
+                        datetime="{{ now()->toDateString() }}" class="post-date"
                     >
-                        {{ \Illuminate\Support\Carbon::parse($album->created_at)->format('M d, Y') }}
+                                        {{ now()->format('M d, Y') }}
                     </time>
                 @endif
             </div>
@@ -90,13 +96,20 @@
 
         <div class="ts-album-detail-info-bar">
             <div class="ts-album-detail-info-item">
-                <span class="ts-album-detail-info-label">
-                    Released
-                </span>
+                <span class="ts-album-detail-info-label">Released</span>
 
-                <span class="ts-album-detail-info-value">
-                    {{ $album->released_year ?: '—' }}
-                </span>
+                @if ($album->released_year)
+                    <a
+                        class="ts-album-detail-info-value "
+                        href="{{ route('pages.albums_released_year', [
+                            'year' => $album->released_year,
+                        ]) }}"
+                    >
+                        {{ $album->released_year }}
+                    </a>
+                @else
+                    <span class="ts-album-detail-info-value">—</span>
+                @endif
             </div>
 
             <div class="ts-album-detail-info-item">
@@ -120,19 +133,40 @@
                     </a>
                 </span>
             </div>
+            
+            
+            @if (in_array($album->artist_country_id, ['naija', 'ghana', 'african'], true))
+                <div class="ts-album-detail-info-item">
+                    <span class="ts-album-detail-info-label">Country</span>
+            
+                    <span class="ts-album-detail-info-value">
+                        
+                            {{ ucfirst($album->artist_country_id) }}
+                      
+                    </span>
+                </div>
+            @endif
         </div>
 
         <section class="ts-album-detail-hero">
             <div class="ts-album-detail-cover">
-                @include('pages.partials.cover', [
-                    'src' => $album->cover_url,
-                    'folder' => '',
-                ])
+                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+            
+                @if ($album->cover_url)
+                    <img
+                        loading="lazy"
+                        src="{{ asset('images/' . ltrim($album->cover_url, '/')) }}"
+                        alt="{{ $album->title }} album cover"
+                        onerror="this.remove()"
+                    >
+                @endif
             </div>
 
             <div class="ts-album-detail-content">
                 <h2 class="ts-album-detail-artist">
-                    {{ $artistName }}
+                    <a href="{{ route('pages.artists_details', \Illuminate\Support\Str::slug($artistName)) }}">
+                        {{ $artistName }}
+                    </a>
                 </h2>
 
                 <div class="ts-album-detail-album-title">
@@ -201,16 +235,7 @@
                     <div class="ts-album-detail-track">
                         <a
                             class="ts-album-detail-track-link"
-                            href="{{ route('pages.musics_detail', [
-                                $track->id,
-                                \Illuminate\Support\Str::slug(
-                                    trim(
-                                        ($track->ArtistsName ?? '')
-                                        . ' '
-                                        . ($track->TrackTitle ?? '')
-                                    )
-                                ),
-                            ]) }}"
+                            href="{{ \App\Support\ListingUrl::musicDetail($track) }}"
                         >
                             <span class="ts-album-detail-track-number">
                                 {{ $track->track_number ?: $loop->iteration }}
@@ -254,5 +279,16 @@
                 @endforelse
             </div>
         </section>
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\AlbumUrl::detail($album),
+            'shareTitle' => $albumName,
+        ])
     </div>
+    
+    @include('pages.partials.comments', [
+        'postType' => 'album',
+        'postId' => (int) $album->id,
+        'postTitle' => $albumName,
+    ])
 @endsection

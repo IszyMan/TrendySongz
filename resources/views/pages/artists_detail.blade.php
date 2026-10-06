@@ -73,12 +73,16 @@
         <section class="ts-artist-section ts-artist-profile-section">
             <div class="ts-artist-profile-card">
                 <div class="ts-artist-profile-image">
-                    @if ($profileImage)
-                        <img src="{{ $profileImage }}" alt="{{ $artistName }}">
-                    @else
-                        <div class="ts-artist-profile-placeholder">
-                            <i class="fa fa-user" aria-hidden="true"></i>
-                        </div>
+                    <div class="ts-artist-profile-placeholder" aria-hidden="true">
+                        <i class="fa fa-user"></i>
+                    </div>
+                
+                    @if (!empty($artist->ProfilePic))
+                        <img
+                            src="{{ asset('images/' . ltrim($artist->ProfilePic, '/')) }}"
+                            alt="{{ $artistName }}"
+                            onerror="this.remove()"
+                        >
                     @endif
                 </div>
 
@@ -156,10 +160,16 @@
                             aria-controls="{{ $panelId }}"
                         >
                             <span class="ts-artist-album-cover">
-                                @include('pages.partials.cover', [
-                                    'src' => $album->cover_url,
-                                    'folder' => '',
-                                ])
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+                            
+                                @if ($album->cover_url)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($album->cover_url, '/')) }}"
+                                        alt="{{ $album->title }} album cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
                             </span>
 
                             <span class="ts-artist-album-header-info">
@@ -200,16 +210,11 @@
                             class="ts-artist-album-tracks"
                         >
                             @forelse ($tracks as $track)
-                                <a
+                               <a
                                     class="ts-artist-track"
-                                    href="{{ route('pages.musics_detail', [
-                                        $track->id,
-                                        \Illuminate\Support\Str::slug(
-                                            $artistName . ' ' . $track->TrackTitle
-                                        ),
-                                    ]) }}"
+                                    href="{{ \App\Support\ListingUrl::musicDetail($track, $artistName) }}"
                                 >
-                                    <span class="ts-artist-track-number">
+                                                                    <span class="ts-artist-track-number">
                                         {{ $track->track_number ?: $loop->iteration }}
                                     </span>
 
@@ -265,42 +270,50 @@
             <header class="ts-artist-section-heading">
                 <h2>{{ $artistName }} Singles</h2>
             </header>
-
+        
             <div class="ts-artist-singles">
                 @forelse ($singles as $track)
                     <a
                         class="ts-artist-track ts-artist-single"
-                        href="{{ route('pages.musics_detail', [
-                            $track->id,
-                            \Illuminate\Support\Str::slug(
-                                $artistName . ' ' . $track->TrackTitle
-                            ),
-                        ]) }}"
+                        href="{{ \App\Support\ListingUrl::musicDetail($track, $artistName) }}"
                     >
                         <span class="ts-artist-track-number">
                             {{ $loop->iteration }}
                         </span>
-
+        
+                        <span class="ts-artist-single-cover">
+                            <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+        
+                            @if ($track->CoverUrl)
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset('images/' . ltrim($track->CoverUrl, '/')) }}"
+                                    alt="{{ $track->TrackTitle }} cover"
+                                    onerror="this.remove()"
+                                >
+                            @endif
+                        </span>
+        
                         <span class="ts-artist-track-info">
                             <span class="ts-artist-track-title-row">
                                 <span class="ts-artist-track-title">
                                     {{ $track->TrackTitle }}
                                 </span>
-
+        
                                 @if ($track->Featuring)
                                     <span class="ts-artist-track-featuring">
                                         feat. {{ $track->Featuring }}
                                     </span>
                                 @endif
                             </span>
-
+        
                             @if ($track->producedby)
                                 <span class="ts-artist-track-credit">
                                     Produced by {{ $track->producedby }}
                                 </span>
                             @endif
                         </span>
-
+        
                         <span class="ts-artist-track-arrow" aria-hidden="true">
                             <i class="fa fa-arrow-right"></i>
                         </span>
@@ -349,30 +362,51 @@
                 <header class="ts-artist-section-heading">
                     <h2>Songs Featuring {{ $artistName }}</h2>
                 </header>
-
-                <div class="ts-artist-info-list">
+        
+                <div class="ts-artist-singles">
                     @foreach ($featuredSongs as $track)
-                        <div class="ts-artist-info-item">
-                            <div class="ts-artist-info-item-text">
-                                <div class="ts-artist-info-item-title">
-                                    <a href="{{ route('pages.musics_detail', [
-                                        $track->id,
-                                        \Illuminate\Support\Str::slug(
-                                            ($track->primary_artist ?: 'Artist')
-                                            . ' '
-                                            . $track->TrackTitle
-                                        ),
-                                    ]) }}">
-                                        {{ $track->primary_artist ?: 'Artist' }}
-                                        - {{ $track->TrackTitle }}
-                                    </a>
-                                </div>
-
-                                <div class="ts-artist-info-text">
-                                    feat. {{ $track->Featuring }}
-                                </div>
-                            </div>
-                        </div>
+                        <a
+                            class="ts-artist-track ts-artist-single"
+                            href="{{ \App\Support\ListingUrl::musicDetail(
+                                $track,
+                                $track->primary_artist ?: 'Artist'
+                            ) }}"
+                        >
+                            <span class="ts-artist-single-cover">
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+        
+                                @if ($track->CoverUrl)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($track->CoverUrl, '/')) }}"
+                                        alt="{{ $track->TrackTitle }} cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
+                            </span>
+        
+                            <span class="ts-artist-track-info">
+                                <span class="ts-featured-song-artist">
+                                    {{ $track->primary_artist ?: 'Artist' }}
+                                </span>
+        
+                                <span class="ts-artist-track-title-row">
+                                    <span class="ts-artist-track-title">
+                                        {{ $track->TrackTitle }}
+                                    </span>
+        
+                                    @if ($track->Featuring)
+                                        <span class="ts-artist-track-featuring">
+                                            feat. {{ $track->Featuring }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </span>
+        
+                            <span class="ts-artist-track-arrow" aria-hidden="true">
+                                <i class="fa fa-arrow-right"></i>
+                            </span>
+                        </a>
                     @endforeach
                 </div>
             </section>

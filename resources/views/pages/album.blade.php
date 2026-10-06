@@ -48,28 +48,23 @@
 
         <div class="ts-artists-albums-list">
             @forelse ($albums as $row)
-                @php
-                    $albumSlug = \Illuminate\Support\Str::slug(
-                        trim(
-                            ($row->ArtistsName ?? '')
-                            . ' '
-                            . $row->title
-                        )
-                    );
-                @endphp
+               
 
                 <a
                     class="ts-artist-album-card"
-                    href="{{ route('pages.album_details', [
-                        $row->id,
-                        $albumSlug,
-                    ]) }}"
+                    href="{{ \App\Support\AlbumUrl::detail($row) }}"
                 >
                     <div class="ts-artist-album-cover">
-                        @include('pages.partials.cover', [
-                            'src' => $row->cover_url,
-                            'folder' => '',
-                        ])
+                        <span class="ts-cover-placeholder" aria-hidden="true">TS</span>
+                    
+                        @if ($row->cover_url)
+                            <img
+                                loading="lazy"
+                                src="{{ asset('images/' . ltrim($row->cover_url, '/')) }}"
+                                alt="{{ $row->title }} album cover"
+                                onerror="this.remove()"
+                            >
+                        @endif
                     </div>
 
                     <div class="ts-artist-album-details">

@@ -3,7 +3,7 @@
 @php
     $pageTitle = 'Download Latest  Music Mp3 Here | TrendySongz';
 
-    $description = 'download music mp3,latests songs, download latest Naija music, download latest  music , Latest Naija songs,  2Baba, tekno, tiwa savage, burna boy, zlatan, mi, ycee, flavour,phyno, rema, olamide, d prince, akon, timaya, spinall, neptune, cuppy, kizz daniel naija musics, nigerian songs';
+    $description = 'Discover and download the latest Naija songs on TrendySongz. Browse new Nigerian and African music, explore your favorite artists, and find fresh MP3 releases.';
 
     $keywords = 'download music mp3, latests songs, latest naija songs, download  music,  latest naija music, download latest music, 2Baba, tekno, tiwa savage, burna boy, zlatan, mi, ycee, flavour,phyno, rema, olamide, d prince, akon, timaya, spinall, neptune, cuppy, kizz daniel, spinall, neptune, kizz daniel naija musics, nigerian songs, dj cuppy, new music, ycee, tekno, download music mp3, akon, ';
 
@@ -56,19 +56,18 @@
         <div class="ts-music-list">
             @forelse ($rows as $row)
                 <article class="ts-music-list-item">
-                    <a class="ts-music-list-link"
-                       href="{{ route('pages.musics_detail', [
-                           $row->id,
-                           \Illuminate\Support\Str::slug(
-                               ($row->ArtistsName ?? '') . ' ' . $row->TrackTitle
-                           ),
-                       ]) }}">
+                    <a class="ts-music-list-link"  href="{{ \App\Support\ListingUrl::musicDetail($row) }}">
 
                         <span class="ts-music-list-cover">
-                            @include('pages.partials.cover', [
-                                'src' => $row->CoverUrl,
-                                'folder' => '',
-                            ])
+                            @if ($row->CoverUrl)
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                    alt="{{ $row->TrackTitle ?? 'Music cover' }}"
+                                    onerror="this.remove()"
+                                >
+                            @endif
+                            <span class="ts-cover-placeholder" aria-hidden="true">TS</span>
                         </span>
 
                         <span class="ts-music-list-info">
@@ -96,7 +95,7 @@
         </div>
 
         <div class="ts-list-pagination">
-            {{ $rows->links() }}
+            {{ $rows->links('vendor.pagination.trendysongz') }}
         </div>
     </div>
 @endsection

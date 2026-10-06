@@ -88,10 +88,8 @@
             @endforelse
         </div>
 
-        @if ($videos instanceof \Illuminate\Contracts\Pagination\Paginator)
-            <div class="ts-video-pagination">
-                {{ $videos->links() }}
-            </div>
-        @endif
+        <div class="ts-list-pagination">
+            {{ $videos->links('vendor.pagination.trendysongz') }}
+        </div>
     </div>
 @endsection

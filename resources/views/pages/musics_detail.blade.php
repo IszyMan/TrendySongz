@@ -30,16 +30,14 @@
         "{$artistName} {$artist->TrackTitle} free mp3",
     ]);
 
-    $canonicalUrl = route('pages.musics_detail', [
-        $artist->id,
-        \Illuminate\Support\Str::slug($title),
-    ]);
+    $canonicalUrl = \App\Support\ListingUrl::detail($artist);
 
     $coverPath = 'images/' . ltrim((string) $artist->CoverUrl, '/');
 
-    $coverUrl = $artist->CoverUrl && is_file(public_path($coverPath))
-        ? asset($coverPath)
-        : null;
+    $coverUrl = $artist->CoverUrl
+        && is_file(dirname(base_path()).'/'.$coverPath)
+            ? asset($coverPath)
+            : null;
 @endphp
 
 @section('title', $pageTitle)
@@ -78,31 +76,24 @@
 
 @section('content')
 
-    @php
+   @php
         $trackUrl = trim((string) ($artist->TrackUrl ?? ''));
         $mediaUrl = null;
-
+    
         if (
             $trackUrl !== ''
             && basename($trackUrl) === $trackUrl
             && ! str_contains($trackUrl, '\\')
         ) {
-            $path = 'media/audio/'.$trackUrl;
-
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-                $mediaUrl = asset('storage/'.$path);
-            }
-        } elseif (str_starts_with($trackUrl, 'storage/media/audio/')) {
-            // Supports listings uploaded before this filename-only change.
-            $path = substr($trackUrl, strlen('storage/'));
-
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
-                $mediaUrl = asset($trackUrl);
-            }
+            $mediaUrl = rtrim(config('cdn.audio_url'), '/')
+                .'/'
+                .str_replace(
+                    ['%28', '%29'],
+                    ['(', ')'],
+                    rawurlencode($trackUrl)
+                );
         }
     @endphp
-
-
     <div class="ts-music-detail">
 
         <header class="ts-music-header">
@@ -111,16 +102,26 @@
             </h1>
 
             <div class="ts-music-meta">
-                <span>
-                    Posted By: {{ $artist->posted_by_name ?: 'TrendySongz' }}
-                </span>
+                <a
+                    class="ts-music-posted-by"
+                    href="{{ route(
+                        'pages.songs_posted_by',
+                        \Illuminate\Support\Str::slug($artist->posted_by_name)
+                    ) }}"
+                >
+                    Posted by:
+                    <strong>{{ $artist->posted_by_name }}</strong>
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </a>
 
                 @if ($artist->created_at)
-                    <span class="ts-meta-separator">|</span>
+                    <span class="ts-music-meta-separator">•</span>
 
-                    <time class="ts-music-date"
-                          datetime="{{ \Illuminate\Support\Carbon::parse($artist->created_at)->toDateString() }}">
-                        {{ \Illuminate\Support\Carbon::parse($artist->created_at)->format('M j, Y') }}
+                    <time
+                        class="ts-music-date"
+                        datetime="{{ now()->toDateString() }}" class="post-date"
+                    >
+                                        {{ now()->format('M d, Y') }}
                     </time>
                 @endif
             </div>
@@ -141,9 +142,15 @@
                 @if ($artist->YearOfRelease)
                     <div class="ts-info-item">
                         <span class="ts-info-label">Recorded:</span>
-                        <span class="ts-info-value">
-                            {{ $artist->YearOfRelease }} 
-                        </span>
+
+                        <a
+                            class="ts-info-value"
+                            href="{{ route('pages.songs_released_year', [
+                                'year' => $artist->YearOfRelease,
+                            ]) }}" style="text-decoration:none";
+                        >
+                            {{ $artist->YearOfRelease }}
+                        </a>
                     </div>
                 @endif
 
@@ -175,7 +182,7 @@
                         <span class="ts-info-label">Country:</span>
                         <span class="ts-info-value">
                             <a href="{{ route('pages.musics', $artist->country_id) }}">
-                                {{ ucfirst($artist->country_id) }} 
+                                {{ ucfirst($artist->country_id) }}
                             </a>
                         </span>
                     </div>
@@ -184,14 +191,23 @@
 
             <div class="ts-music-body">
                 <div class="ts-music-cover">
-                    @include('pages.partials.cover', [
-                        'src' => $artist->CoverUrl,
-                        'folder' => '',
-                    ])
+                    <span class="ts-cover-placeholder" aria-hidden="true">TS</span>
+
+                    @if ($artist->CoverUrl)
+                        <img
+                            src="{{ asset('images/' . ltrim($artist->CoverUrl, '/')) }}"
+                            alt="{{ $artist->TrackTitle ?? 'Music cover' }}"
+                            onerror="this.remove()"
+                        >
+                    @endif
                 </div>
 
                 <div class="ts-music-content">
-                    <h2 class="ts-song-artist">{{ $artistName }}</h2>
+                    <h2 class="ts-song-artist">
+                        <a href="{{ route('pages.artists_details', \Illuminate\Support\Str::slug($artistName)) }}">
+                            {{ $artistName }}
+                        </a>
+                    </h2>
 
                     <div class="ts-song-title-row">
                         <h3 class="ts-song-title">
@@ -237,23 +253,20 @@
                         </span>
                     </div>
 
-                    @if ($mediaUrl)
+                   @if ($mediaUrl)
                         <a
                             class="ts-download-button"
                             href="{{ $mediaUrl }}"
-                            download="{{ \Illuminate\Support\Str::slug($title) }}.mp3"
                         >
                             <i class="fa fa-download" aria-hidden="true"></i>
-                            Download {{ $artist->TrackTitle }} Mp3
+                            Download {{ $artistName }} - {{ $artist->TrackTitle }} Mp3
                         </a>
                     @else
                         <button type="button" class="ts-download-button" disabled>
                             <i class="fa fa-download" aria-hidden="true"></i>
-                            Download {{ $artist->TrackTitle }} Mp3
+                            Download {{ $artistName }} - {{ $artist->TrackTitle }} Mp3
                         </button>
                     @endif
-
-                    
                 </div>
             </div>
         </section>
@@ -261,7 +274,7 @@
         @if ($artist->introduction || $artist->TrackInfo || $artist->trackinfo1)
             <section class="ts-about-song">
                 <div class="ts-about-song-inner">
-                    <h2 class="ts-about-heading">
+                    <h2 class="ts-video-detail-section-heading">
                         About Song
                     </h2>
 
@@ -280,6 +293,11 @@
                 </div>
             </section>
         @endif
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\ListingUrl::detail($artist),
+            'shareTitle' => $title,
+        ])
 
         @if ($related->isNotEmpty())
             <section class="ts-section">
@@ -289,7 +307,51 @@
 
                 <div class="ts-music-grid">
                     @foreach ($related as $row)
-                        @include('pages.partials.music-card', ['row' => $row])
+                        <a
+                            class="ts-music-card"
+                            href="{{ \App\Support\ListingUrl::musicDetail($row) }}"
+                        >
+                            <div class="ts-music-cover">
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+
+                                @if ($row->CoverUrl)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                        alt="{{ $row->TrackTitle }} cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
+
+                                <span class="ts-music-overlay">
+                                    <span class="ts-play-button">▶</span>
+                                </span>
+                            </div>
+
+                            <div class="ts-music-info">
+                                <span class="ts-home-music-artist">
+                                    {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                                </span>
+
+                                <div class="ts-home-music-title-row">
+                                    <span class="ts-home-music-title">
+                                        {{ $row->TrackTitle }}
+                                    </span>
+
+                                    @if ($row->Featuring)
+                                        <span class="ts-home-music-featuring">
+                                            <span>feat.</span> {{ $row->Featuring }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                @if ($row->producedby)
+                                    <span class="ts-home-music-producer">
+                                        Produced by {{ $row->producedby }}
+                                    </span>
+                                @endif
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </section>
@@ -317,7 +379,35 @@
 
                 <div class="ts-videos-grid">
                     @foreach ($artistVideos as $row)
-                        @include('pages.partials.video-card', ['row' => $row])
+                        <a
+                            class="ts-video-card"
+                            href="{{ \App\Support\ListingUrl::videoDetail($row) }}"
+                        >
+                            <div class="ts-video-cover">
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+
+                                @if ($row->CoverUrl)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                        alt="{{ $row->TrackTitle }} video cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
+
+                                <span class="ts-video-play" aria-hidden="true">▶</span>
+                            </div>
+
+                            <div class="ts-video-info">
+                                <span class="ts-video-artist">
+                                    {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                                </span>
+
+                                <span class="ts-video-title">
+                                    {{ $row->TrackTitle }}
+                                </span>
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </section>
@@ -331,7 +421,51 @@
 
                 <div class="ts-music-grid">
                     @foreach ($collaborations as $row)
-                        @include('pages.partials.music-card', ['row' => $row])
+                        <a
+                            class="ts-music-card"
+                            href="{{ \App\Support\ListingUrl::detail($row) }}"
+                        >
+                            <div class="ts-music-cover">
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+
+                                @if ($row->CoverUrl)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                        alt="{{ $row->TrackTitle }} cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
+
+                                <span class="ts-music-overlay">
+                                    <span class="ts-play-button">▶</span>
+                                </span>
+                            </div>
+
+                            <div class="ts-music-info">
+                                <span class="ts-home-music-artist">
+                                    {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                                </span>
+
+                                <div class="ts-home-music-title-row">
+                                    <span class="ts-home-music-title">
+                                        {{ $row->TrackTitle }}
+                                    </span>
+
+                                    @if ($row->Featuring)
+                                        <span class="ts-home-music-featuring">
+                                            <span>feat.</span> {{ $row->Featuring }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                @if ($row->producedby)
+                                    <span class="ts-home-music-producer">
+                                        Produced by {{ $row->producedby }}
+                                    </span>
+                                @endif
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </section>
@@ -345,14 +479,63 @@
 
                 <div class="ts-music-grid">
                     @foreach ($latestMusic as $row)
-                        @include('pages.partials.music-card', ['row' => $row])
+                        <a
+                            class="ts-music-card"
+                            href="{{ \App\Support\ListingUrl::musicDetail($row) }}"
+                        >
+                            <div class="ts-music-cover">
+                                <span class="ts-cover-placeholder" aria-hidden="true">Tz</span>
+
+                                @if ($row->CoverUrl)
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                        alt="{{ $row->TrackTitle }} cover"
+                                        onerror="this.remove()"
+                                    >
+                                @endif
+
+                                <span class="ts-music-overlay">
+                                    <span class="ts-play-button">▶</span>
+                                </span>
+                            </div>
+
+                            <div class="ts-music-info">
+                                <span class="ts-home-music-artist">
+                                    {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                                </span>
+
+                                <div class="ts-home-music-title-row">
+                                    <span class="ts-home-music-title">
+                                        {{ $row->TrackTitle }}
+                                    </span>
+
+                                    @if ($row->Featuring)
+                                        <span class="ts-home-music-featuring">
+                                            <span>feat.</span> {{ $row->Featuring }}
+                                        </span>
+                                    @endif
+                                </div>
+
+                                @if ($row->producedby)
+                                    <span class="ts-home-music-producer">
+                                        Produced by {{ $row->producedby }}
+                                    </span>
+                                @endif
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </section>
-        @endif     
+        @endif
 
     </div>
-
+    
+    @include('pages.partials.comments', [
+        'postType' => 'music',
+        'postId' => (int) $artist->id,
+        'postTitle' => $title,
+    ])
 
     @if ($mediaUrl)
         <script>
