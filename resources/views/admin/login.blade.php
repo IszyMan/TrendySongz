@@ -7,7 +7,23 @@
     <title>Admin login | TrendySongz</title>
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 20px; font-family: Arial, Helvetica, sans-serif; background: #f3f5ee; color: #222; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+        
+            background-color: #f3f5ee;
+            background-image:
+                linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+                url("{{ asset('images/TrendySongz-Naija-Artwork.jpg') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
         .login-card { width: min(100%, 420px); padding: 35px; border: 1px solid #e1e6d7; border-radius: 14px; background: white; box-shadow: 0 14px 42px #26331312; }
         h1 { margin: 0 0 5px; font-size: 24px; text-align: center; } p { margin: 0 0 25px; color: #66705e; text-align: center;}
         label { display: grid; gap: 7px; margin: 0 0 17px; font-weight: 700; }

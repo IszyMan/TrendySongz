@@ -7,8 +7,8 @@
         <label>Name <input name="name" maxlength="50" value="{{ old('name') }}" required></label>
         <label>Email <input type="email" name="email" value="{{ old('email') }}" required></label>
         <label>Role <select name="roleid" required>
-            <option value="3" @selected(old('roleid') === '3')>Standard User — uploads</option>
-            <option value="2" @selected(old('roleid') === '2')>Editor — blogs</option>
+            <option value="3" @selected(old('roleid') === '2')>Standard User — uploads</option>
+            <option value="2" @selected(old('roleid') === '3')>Editor — blogs</option>
         </select></label>
         <label>Password <input type="password" name="password" minlength="12" autocomplete="new-password" required></label>
         <label>Confirm password <input type="password" name="password_confirmation" minlength="12" autocomplete="new-password" required></label>

@@ -89,12 +89,12 @@
                     <span class="ts-video-detail-meta-separator">•</span>
 
                     <time
-                        class="ts-video-detail-date"
-                        datetime="{{ \Illuminate\Support\Carbon::parse($artist->created_at)->toDateString() }}"
+                        class="ts-music-date"
+                        datetime="{{ now()->toDateString() }}" class="post-date"
                     >
-                        {{ \Illuminate\Support\Carbon::parse($artist->created_at)->format('M d, Y') }}
+                                        {{ now()->format('M d, Y') }}
                     </time>
-                @endif
+                    @endif
             </div>
         </header>
 
@@ -132,7 +132,7 @@
             </div>
         </div>
 
-        <section class="ts-video-detail-player-section">
+        <!--<section class="ts-video-detail-player-section">
             <div class="ts-video-detail-player">
                 @if ($artist->TrackUrl)
                     <video
@@ -171,41 +171,37 @@
                     Video file awaiting restoration.
                 </p>
             @endif
-        </section>
+        </section>-->
 
         @if ($artist->introduction)
             <section class="ts-video-detail-section ts-video-detail-about">
                 <h2 class="ts-video-detail-section-heading">
                     About this video
                 </h2>
-
+        
                 <div class="ts-video-detail-about-text">
-                    {!! $artist->introduction !!}
+                    {!! nl2br(e(strip_tags($artist->introduction))) !!}
                 </div>
             </section>
         @endif
-
-        @if ($artist->TrackInfo || $artist->trackinfo1)
+        
+        @if ($artist->TrackInfo || $artist->trackinfo1 || $artist->trackinfo2)
             <section class="ts-video-detail-section ts-video-detail-information">
-                <h2 class="ts-video-detail-section-heading">
-                    Video information
-                </h2>
-
-                @if ($artist->TrackInfo)
-                    <div class="ts-video-detail-info-text">
-                        {!! $artist->TrackInfo !!}
-                    </div>
-                @endif
-
-                @if ($artist->trackinfo1)
-                    <div class="ts-video-detail-info-text">
-                        {!! $artist->trackinfo1 !!}
-                    </div>
-                @endif
+                @foreach ([
+                    $artist->TrackInfo,
+                    $artist->trackinfo1,
+                    $artist->trackinfo2,
+                ] as $paragraph)
+                    @if ($paragraph)
+                        <div class="ts-video-detail-info-text">
+                            {!! nl2br(e(strip_tags($paragraph))) !!}
+                        </div>
+                    @endif
+                @endforeach
             </section>
         @endif
 
-        @if ($additional_link)
+        <!--@if ($additional_link)
             <section class="ts-video-detail-audio-link">
                 <span>Also available:</span>
 
@@ -228,7 +224,13 @@
                     MP3
                 </a>
             </section>
-        @endif
+        @endif-->
+        
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\ListingUrl::detail($artist),
+            'shareTitle' => $title,
+        ])
 
         @if ($video->isNotEmpty())
             <section class="ts-video-detail-section ts-video-detail-related">
@@ -275,6 +277,9 @@
                 </div>
             </section>
         @endif
+        
+        
+        
 
         @if ($audio->isNotEmpty())
             <section class="ts-related-section ts-video-detail-related">
@@ -405,4 +410,25 @@
         @endif
 
     </div>
+    
+    @include('pages.partials.comments', [
+        'postType' => 'video',
+        'postId' => (int) $artist->id,
+        'postTitle' => $videoTitle,
+    ])
+    
+    
+    <script>
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            var script = document.createElement('script');
+    
+            script.src = 'https://d2f9q8zryik75d.cloudfront.net/?rzqfd=1724803';
+            script.async = true;
+            script.setAttribute('data-cfasync', 'false');
+    
+            document.body.appendChild(script);
+        }, 3000);
+    }, { once: true });
+    </script>
 @endsection

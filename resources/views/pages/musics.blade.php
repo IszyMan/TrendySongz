@@ -3,7 +3,7 @@
 @php
     $pageTitle = 'Download Latest  Music Mp3 Here | TrendySongz';
 
-    $description = 'download music mp3,latests songs, download latest Naija music, download latest  music , Latest Naija songs,  2Baba, tekno, tiwa savage, burna boy, zlatan, mi, ycee, flavour,phyno, rema, olamide, d prince, akon, timaya, spinall, neptune, cuppy, kizz daniel naija musics, nigerian songs';
+    $description = 'Discover and download the latest Naija songs on TrendySongz. Browse new Nigerian and African music, explore your favorite artists, and find fresh MP3 releases.';
 
     $keywords = 'download music mp3, latests songs, latest naija songs, download  music,  latest naija music, download latest music, 2Baba, tekno, tiwa savage, burna boy, zlatan, mi, ycee, flavour,phyno, rema, olamide, d prince, akon, timaya, spinall, neptune, cuppy, kizz daniel, spinall, neptune, kizz daniel naija musics, nigerian songs, dj cuppy, new music, ycee, tekno, download music mp3, akon, ';
 
@@ -53,50 +53,11 @@
             </time>
         </header>
 
-        <div class="ts-music-list">
-            @forelse ($rows as $row)
-                <article class="ts-music-list-item">
-                    <a class="ts-music-list-link"
-                       href="{{ route('pages.musics_detail', [
-                           $row->id,
-                           \Illuminate\Support\Str::slug(
-                               ($row->ArtistsName ?? '') . ' ' . $row->TrackTitle
-                           ),
-                       ]) }}">
+        @include('pages.partials.music-listing', [
+            'rows' => $rows,
+            'emptyMessage' => 'No published music found.'
+        ])
 
-                        <span class="ts-music-list-cover">
-                            @include('pages.partials.cover', [
-                                'src' => $row->CoverUrl,
-                                'folder' => '',
-                            ])
-                        </span>
-
-                        <span class="ts-music-list-info">
-                            <span class="ts-music-list-artist">
-                                {{ $row->ArtistsName ?: 'Unknown Artist' }}
-                            </span>
-
-                            <span class="ts-music-list-title">
-                                {{ $row->TrackTitle }}
-                            </span>
-
-                            @if ($row->Featuring)
-                                <span class="ts-music-list-featuring">
-                                    feat. {{ $row->Featuring }}
-                                </span>
-                            @endif
-                        </span>
-
-                        <span class="ts-music-list-action">›</span>
-                    </a>
-                </article>
-            @empty
-                <p>No published music found.</p>
-            @endforelse
-        </div>
-
-        <div class="ts-list-pagination">
-            {{ $rows->links() }}
-        </div>
+        
     </div>
 @endsection

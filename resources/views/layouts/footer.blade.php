@@ -13,6 +13,7 @@
                     <a href="{{ route('pages.musics', 'naija') }}">Naija Music</a>
                     <a href="{{ route('pages.musics', 'ghana') }}">Ghana Music</a>
                     <a href="{{ route('pages.musics', 'african') }}">African Music</a>
+                    <a href="{{ route('pages.celebrity_news') }}">Music News</a>
                 </div>
             </div>
 
@@ -23,6 +24,7 @@
                     <a href="{{ route('pages.videos_all') }}">Videos</a>
                     <a href="{{ route('pages.album') }}">Albums</a>
                     <a href="{{ route('pages.djmix') }}">DJ Mixes</a>
+                    <a href="{{ route('pages.artists') }}">Artists</a>
                 </div>
             </div>
 
@@ -30,9 +32,9 @@
                 <h3>More</h3>
 
                 <div class="ts-footer-links">
-                    <a href="{{ route('pages.artists') }}">Artists</a>
-                    <a href="{{ route('pages.celebrity_news') }}">Music News</a>
-                    <a href="{{ route('pages.search') }}">Search</a>
+                    <a href="{{ route('pages.about') }}">About Us</a>
+                    <a href="{{ route('pages.contact') }}">Contact Us</a>
+                    <a href="{{ route('pages.dmca') }}">DMCA</a>
                 </div>
             </div>
         </div>

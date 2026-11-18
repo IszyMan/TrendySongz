@@ -5,13 +5,8 @@
     $mixTitle = $dj->mix_title ?: 'DJ Mixtape';
     $title = $djName . ' - ' . $mixTitle;
 
-    $canonicalSlug = $dj->slug
-        ?: \Illuminate\Support\Str::slug($title);
 
-    $canonicalUrl = route('pages.djmix_detail', [
-        $dj->id,
-        $canonicalSlug,
-    ]);
+    $canonicalUrl = \App\Support\DjMixUrl::detail($dj);
 
     $description = \Illuminate\Support\Str::limit(
         trim(strip_tags(($dj->description1 ?: $dj->details) ?: $title)),
@@ -25,6 +20,17 @@
     $coverUrl = $dj->cover_url
         ? asset('images/dj/' . ltrim($dj->cover_url, '/'))
         : null;
+
+        $audioFilename = trim((string) ($dj->track_url ?? ''));
+    $audioPath = 'media/djmixs/'.$audioFilename;
+
+    $audioUrl = $audioFilename !== ''
+        && basename($audioFilename) === $audioFilename
+        && ! str_contains($audioFilename, '\\')
+        && \Illuminate\Support\Facades\Storage::disk('public')
+            ->exists($audioPath)
+            ? asset('storage/'.$audioPath)
+            : null;    
 @endphp
 
 @section('title', 'Download Mix: ' . $title . ' Mix')
@@ -80,9 +86,9 @@
 
                     <time
                         class="ts-music-date"
-                        datetime="{{ $postedDate->toDateString() }}"
+                        datetime="{{ now()->toDateString() }}" class="post-date"
                     >
-                        {{ $postedDate->format('M j, Y') }}
+                                        {{ now()->format('M d, Y') }}
                     </time>
                 @endif
             </div>
@@ -131,7 +137,7 @@
                 <div class="ts-music-cover">
                     @include('pages.partials.cover', [
                         'src' => $dj->cover_url,
-                        'folder' => 'dj',
+                        'folder' => 'dj/',
                     ])
                 </div>
 
@@ -142,32 +148,58 @@
                         <h3 class="ts-song-title">{{ $mixTitle }}</h3>
                     </div>
 
-                    <div class="ts-audio-box">
-                        <button
-                            type="button"
-                            class="ts-main-play"
-                            aria-label="Play {{ $title }}"
-                            title="Audio file awaiting restoration"
-                            disabled
-                        >
-                            <i class="fa fa-play" aria-hidden="true"></i>
-                        </button>
+                    <!--<div class="ts-audio-box">
+                        @if ($audioUrl)
+                            <button
+                                type="button"
+                                class="ts-main-play"
+                                id="ts-djmix-play"
+                                aria-label="Play {{ $title }}"
+                            >
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </button>
+
+                            <audio
+                                id="ts-djmix-audio"
+                                src="{{ $audioUrl }}"
+                                preload="none"
+                            ></audio>
+                        @else
+                            <button
+                                type="button"
+                                class="ts-main-play"
+                                aria-label="Audio unavailable"
+                                disabled
+                            >
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </button>
+                        @endif
 
                         <span class="ts-audio-heading">
                             Listen to {{ $title }} Here
                         </span>
                     </div>
 
-                    <button
-                        type="button"
-                        class="ts-download-button"
-                        title="Download available when the audio file is restored"
-                        disabled
-                    >
-                        <i class="fa fa-download" aria-hidden="true"></i>
-                        Download {{ $mixTitle }}
-                    </button>
-                </div>
+                    @if ($audioUrl)
+                        <a
+                            class="ts-download-button"
+                            href="{{ $audioUrl }}"
+                            download="{{ $audioFilename }}"
+                        >
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            Download {{ $title }}
+                        </a>
+                    @else
+                        <button
+                            type="button"
+                            class="ts-download-button"
+                            disabled
+                        >
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                            Download {{ $title }}
+                        </button>
+                    @endif
+                </div>-->
             </div>
         </section>
 
@@ -188,6 +220,11 @@
                 </div>
             </section>
         @endif
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\DjMixUrl::detail($dj),
+            'shareTitle' => $title,
+        ])
 
         @if ($djOtherMixes->isNotEmpty())
             <section class="ts-djmix-section">
@@ -201,18 +238,11 @@
                             $relatedDjName = $mix->dj_name ?: $djName;
                             $relatedTitle = $mix->mix_title ?: 'DJ Mixtape';
 
-                            $relatedSlug = $mix->slug
-                                ?: \Illuminate\Support\Str::slug(
-                                    $relatedDjName . ' ' . $relatedTitle
-                                );
                         @endphp
 
                         <a
                             class="ts-djmix-card"
-                            href="{{ route('pages.djmix_detail', [
-                                $mix->id,
-                                $relatedSlug,
-                            ]) }}"
+                            href="{{ \App\Support\DjMixUrl::detail($mix) }}"
                         >
                             <span class="ts-djmix-cover">
                                 @include('pages.partials.cover', [
@@ -266,18 +296,11 @@
                             $relatedDjName = $mix->dj_name ?: 'TrendySongz DJ';
                             $relatedTitle = $mix->mix_title ?: 'DJ Mixtape';
 
-                            $relatedSlug = $mix->slug
-                                ?: \Illuminate\Support\Str::slug(
-                                    $relatedDjName . ' ' . $relatedTitle
-                                );
                         @endphp
 
                         <a
                             class="ts-djmix-card"
-                            href="{{ route('pages.djmix_detail', [
-                                $mix->id,
-                                $relatedSlug,
-                            ]) }}"
+                            href="{{ \App\Support\DjMixUrl::detail($mix) }}"
                         >
                             <span class="ts-djmix-cover">
                                 @include('pages.partials.cover', [
@@ -319,4 +342,49 @@
             </section>
         @endif
     </article>
+    
+    @include('pages.partials.comments', [
+        'postType' => 'djmix',
+        'postId' => (int) $dj->id,
+        'postTitle' => $title,
+    ])
+
+
+    @if ($audioUrl)
+        <script>
+            const djAudio = document.getElementById('ts-djmix-audio');
+            const djPlayButton = document.getElementById('ts-djmix-play');
+            const djPlayIcon = djPlayButton.querySelector('i');
+
+            djPlayButton.addEventListener('click', function () {
+                if (djAudio.paused) {
+                    djAudio.play();
+                } else {
+                    djAudio.pause();
+                }
+            });
+
+            djAudio.addEventListener('play', function () {
+                djPlayIcon.classList.replace('fa-play', 'fa-pause');
+                djPlayButton.setAttribute(
+                    'aria-label',
+                    'Pause DJ mix'
+                );
+            });
+
+            function showDjPlayIcon() {
+                djPlayIcon.classList.replace('fa-pause', 'fa-play');
+                djPlayButton.setAttribute(
+                    'aria-label',
+                    'Play DJ mix'
+                );
+            }
+
+            djAudio.addEventListener('pause', showDjPlayIcon);
+            djAudio.addEventListener('ended', showDjPlayIcon);
+        </script>
+    @endif
+    
+    <script data-cfasync="false" src="//d2f9q8zryik75d.cloudfront.net/?rzqfd=1724803"></script>
+
 @endsection

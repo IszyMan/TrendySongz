@@ -14,10 +14,7 @@
         160
     );
 
-    $canonicalUrl = route('pages.celebritynews_details', [
-        $blog->id,
-        \Illuminate\Support\Str::slug($articleTitle),
-    ]);
+    $canonicalUrl = \App\Support\BlogUrl::detail($blog);
 
     $imageUrl = $blog->photo
         ? asset('images/blog/' . ltrim($blog->photo, '/'))
@@ -139,8 +136,13 @@
                 @endforeach
             </div>
 
-            <p class="ts-blog-source">Source: TrendySongz</p>
+            <p class="ts-blog-source">Source: <a href="{{ url('/') }}" style="text-decoration:none">TrendySongz</a></p>
         </article>
+        
+        @include('pages.partials.share', [
+            'shareUrl' => \App\Support\BlogUrl::detail($blog),
+            'shareTitle' => $blog->title,
+        ])
 
 
         @if ($related_blog->isNotEmpty())
@@ -151,10 +153,7 @@
                     @foreach ($related_blog as $related)
                         <a
                             class="ts-blog-related-card"
-                            href="{{ route('pages.celebritynews_details', [
-                                $related->id,
-                                \Illuminate\Support\Str::slug($related->title),
-                            ]) }}"
+                            href="{{ \App\Support\BlogUrl::detail($related) }}"
                         >
                             @if ($related->photo)
                                 <img
@@ -171,4 +170,11 @@
             </section>
         @endif
     </div>
+   
+
+    @include('pages.partials.comments', [
+        'postType' => 'blog',
+        'postId' => (int) $blog->id,
+        'postTitle' => $articleTitle,
+    ])
 @endsection

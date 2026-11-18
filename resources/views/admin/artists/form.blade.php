@@ -97,11 +97,12 @@
     </label>
 
     <label class="admin-wide">
-        Short profile
+        Artist biography
         <textarea
-            name="ArtistsProfile"
-            maxlength="100"
-        >{{ old('ArtistsProfile', $artist->ArtistsProfile ?? '') }}</textarea>
+            name="Place_Birth"
+            rows="12"
+            maxlength="10000"
+        >{{ old('Place_Birth', $artist->Place_Birth ?? '') }}</textarea>
     </label>
 
     <input type="hidden" name="publish" value="0">

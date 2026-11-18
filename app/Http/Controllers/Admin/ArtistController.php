@@ -76,7 +76,7 @@ class ArtistController extends Controller
             'Fullname' => ['nullable', 'string', 'max:100'],
             'RecordLabel' => ['nullable', 'string', 'max:100'],
             'Genres' => ['nullable', 'string', 'max:100'],
-            'ArtistsProfile' => ['nullable', 'string', 'max:100'],
+            'Place_Birth' => ['nullable', 'string', 'max:10000'],
             'image' => ['nullable', 'image', 'max:5120'],
             'publish' => ['required', 'boolean'],
         ]);
@@ -90,7 +90,7 @@ class ArtistController extends Controller
             'Fullname' => $data['Fullname'] ?? null,
             'RecordLabel' => $data['RecordLabel'] ?? null,
             'Genres' => $data['Genres'] ?? null,
-            'ArtistsProfile' => $data['ArtistsProfile'] ?? null,
+            'Place_Birth' => $data['Place_Birth'] ?? null,
             'country_id' => $data['country_id'],
             'IsPublished' => $request->boolean('publish') ? 'YES' : 'NO',
         ];
@@ -156,7 +156,7 @@ class ArtistController extends Controller
                 $nextNumber = ((int) ($result->last_number ?? 0)) + 1;
                 $artistKey = 'TB'.$nextNumber;
 
-                DB::table('artists')->insert([
+                $artistId = DB::table('artists')->insertGetId([
                     ...$this->formFields($request, $data),
                     'Artists_Id' => $artistKey,
                     'ProfilePic' => $imageName,
@@ -179,8 +179,8 @@ class ArtistController extends Controller
         }
 
         return redirect()
-            ->route('admin.artists.index')
-            ->with('status', 'Artiste saved.');
+            ->route('admin.artists.edit', $artistId)
+            ->with('status', 'Artiste created successfully.');
     }
 
     public function update(Request $request, int $artist)
@@ -229,8 +229,8 @@ class ArtistController extends Controller
         }
 
         return redirect()
-            ->route('admin.artists.index')
-            ->with('status', 'Artiste updated.');
+            ->route('admin.artists.edit', $artist)
+            ->with('status', 'Artiste updated successfully.');
     }
 
     public function destroy(Request $request, int $artist)

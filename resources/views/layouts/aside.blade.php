@@ -26,62 +26,75 @@
 
     $starArtistes = [
         'Adekunle Gold' => 'adekunle-gold',
-        'Skales' => 'skales',
+        'Shallipopi' => 'shallipopi',
         'Niniola' => 'niniola',
-        'T Classic' => 't-classic',
+        'Mavo' => 'mavo',
         'Ladipoe' => 'ladipoe',
         'Vector' => 'vector',
         'Asa' => 'asa',
-        'Demmie Vee' => 'demmie-vee',
-        'King Perryy' => 'king-perryy',
-        'Skiibii' => 'skiibii',
+        'Famous Pluto' => 'famous-pluto',
+        'Shoday' => 'shoday',
+        'Rybeena' => 'rybeena',
         'Timaya' => 'timaya',
-        'Slimcase' => 'slimcase',
+        'Ayra Starr' => 'ayra-starr',
         'Ice Prince' => 'ice-prince',
         'Peruzzi' => 'peruzzi',
-        'Yung6ix' => 'yung6ix',
+        'Zlatan' => 'zlatan',
         'Diamond Platnumz' => 'diamond-platnumz',
     ];
 @endphp
 
 <div class="ts-sidebar-content">
-    <section class="ts-aside-section">
+    <section class="ts-aside-section ts-aside-explore">
         <h2 class="ts-sidebar-heading">Explore TrendySongz</h2>
-
-        <ul>
+    
+        <ul class="ts-explore-links">
             <li>
                 <a href="{{ route('pages.musics', 'naija') }}">
-                    Naija Music
+                    <i class="fa fa-music" aria-hidden="true"></i>
+                    <span>Naija Music</span>
                 </a>
             </li>
-
+    
             <li>
                 <a href="{{ route('pages.musics', 'ghana') }}">
-                    Ghana Music
+                    <i class="fa fa-globe" aria-hidden="true"></i>
+                    <span>Ghana Music</span>
                 </a>
             </li>
-
+            
+            <li>
+                <a href="{{ route('pages.musics', 'african') }}">
+                    <i class="fa fa-globe" aria-hidden="true"></i>
+                    <span>African Music</span>
+                </a>
+            </li>
+    
             <li>
                 <a href="{{ route('pages.videos_all') }}">
-                    Latest Videos
+                    <i class="fa fa-film" aria-hidden="true"></i>
+                    <span>Latest Videos</span>
                 </a>
             </li>
-
+    
             <li>
                 <a href="{{ route('pages.album') }}">
-                    Albums &amp; EPs
+                    <i class="fa fa-th-large" aria-hidden="true"></i>
+                    <span>Albums &amp; EPs</span>
                 </a>
             </li>
-
+    
             <li>
                 <a href="{{ route('pages.djmix') }}">
-                    DJ Mixes
+                    <i class="fa fa-headphones" aria-hidden="true"></i>
+                    <span>DJ Mixes</span>
                 </a>
             </li>
-
+    
             <li>
                 <a href="{{ route('pages.celebrity_news') }}">
-                    Music News
+                    <i class="fa fa-newspaper-o" aria-hidden="true"></i>
+                    <span>Music News</span>
                 </a>
             </li>
         </ul>

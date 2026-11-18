@@ -1,1 +1,12 @@
-<span class="ts-cover-placeholder" aria-hidden="true">TS</span>@if($src)<img loading="lazy" src="{{ asset('images/' . $folder . ltrim($src, '/')) }}" alt="" onerror="this.remove()">@endif
+<span class="ts-cover-placeholder" aria-hidden="true">
+    TS
+</span>
+
+@if ($src)
+    <img
+        loading="lazy"
+        src="{{ asset('images/' . $folder . ltrim($src, '/')) }}"
+        alt=""
+        onerror="this.remove()"
+    >
+@endif

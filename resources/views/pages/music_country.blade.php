@@ -58,50 +58,11 @@
                 </time>
             </header>
 
-        <div class="ts-music-list">
-            @forelse ($rows as $row)
-                <article class="ts-music-list-item">
-                    <a class="ts-music-list-link"
-                       href="{{ route('pages.musics_detail', [
-                           $row->id,
-                           \Illuminate\Support\Str::slug(
-                               ($row->ArtistsName ?? '') . ' ' . $row->TrackTitle
-                           ),
-                       ]) }}">
+        @include('pages.partials.music-listing', [
+            'rows' => $rows,
+            'emptyMessage' => 'No published ' . $countryName . ' music found.'
+        ])
 
-                        <span class="ts-music-list-cover">
-                            @include('pages.partials.cover', [
-                                'src' => $row->CoverUrl,
-                                'folder' => '',
-                            ])
-                        </span>
-
-                        <span class="ts-music-list-info">
-                            <span class="ts-music-list-artist">
-                                {{ $row->ArtistsName ?: 'Unknown Artist' }}
-                            </span>
-
-                            <span class="ts-music-list-title">
-                                {{ $row->TrackTitle }}
-                            </span>
-
-                            @if ($row->Featuring)
-                                <span class="ts-music-list-featuring">
-                                    feat. {{ $row->Featuring }}
-                                </span>
-                            @endif
-                        </span>
-
-                        <span class="ts-music-list-action">›</span>
-                    </a>
-                </article>
-            @empty
-                <p>No published {{ $countryName }} music found.</p>
-            @endforelse
-        </div>
-
-        <div class="ts-list-pagination">
-            {{ $rows->links() }}
-        </div>
+        
     </div>
 @endsection

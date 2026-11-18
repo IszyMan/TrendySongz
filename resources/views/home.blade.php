@@ -1,4 +1,4 @@
-@extends('layouts.app')
+ @extends('layouts.app')
 
 @section('title', 'TrendySongz - Nigerian Top Music Download Website for Trending Songs')
 
@@ -40,14 +40,51 @@
 
             <div class="ts-music-grid">
                 @forelse ($music as $row)
-                    @include('pages.partials.music-card')
+                    <a class="ts-music-card"  href="{{ \App\Support\ListingUrl::musicDetail($row) }}">
+                        <div class="ts-music-cover">
+                            <img
+                                src="{{ !empty($row->CoverUrl)
+                                    ? asset('images/' . ltrim($row->CoverUrl, '/'))
+                                    : asset('images/placeholder.jpg') }}"
+                                alt="{{ $row->TrackTitle }} cover"
+                                loading="lazy"
+                                onerror="this.onerror=null;this.src='{{ asset('images/placeholder.jpg') }}';"
+                            >
+
+                            <span class="ts-music-overlay">
+                                <span class="ts-play-button">▶</span>
+                            </span>
+                        </div>
+
+                        <div class="ts-music-info">
+                            <span class="ts-home-music-artist">
+                                {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                            </span>
+
+                            <div class="ts-home-music-title-row">
+                                <span class="ts-home-music-title">{{ $row->TrackTitle }}</span>
+
+                                @if ($row->Featuring)
+                                    <span class="ts-home-music-featuring">
+                                        <span>feat.</span> {{ $row->Featuring }}
+                                    </span>
+                                @endif
+                            </div>
+
+                            @if ($row->producedby)
+                                <span class="ts-home-music-producer">
+                                    Produced by {{ $row->producedby }}
+                                </span>
+                            @endif
+                        </div>
+                    </a>
                 @empty
                     <p>More music is coming soon.</p>
                 @endforelse
             </div>
 
             <p class="ts-section-button">
-                <a href="{{ route('pages.musics', 'naija') }}">View all music →</a>
+                <a href="{{ route('pages.music_all') }}">View all music →</a>
             </p>
         </section>
 
@@ -58,7 +95,34 @@
 
             <div class="ts-videos-grid">
                 @forelse ($videos as $row)
-                    @include('pages.partials.video-card')
+                    <a class="ts-video-card" href="{{ \App\Support\ListingUrl::videoDetail($row) }}">
+                        <div class="ts-video-cover">
+                            <span class="ts-cover-placeholder" aria-hidden="true">
+                                TS
+                            </span>
+            
+                            @if ($row->CoverUrl)
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset('images/' . ltrim($row->CoverUrl, '/')) }}"
+                                    alt="{{ $row->TrackTitle }} video cover"
+                                    onerror="this.remove()"
+                                >
+                            @endif
+            
+                            <span class="ts-video-play" aria-hidden="true">▶</span>
+                        </div>
+            
+                        <div class="ts-video-info">
+                            <span class="ts-video-artist">
+                                {{ $row->ArtistsName ?: 'Unknown Artist' }}
+                            </span>
+            
+                            <span class="ts-video-title">
+                                {{ $row->TrackTitle }}
+                            </span>
+                        </div>
+                    </a>
                 @empty
                     <p>More videos are coming soon.</p>
                 @endforelse
@@ -72,16 +136,52 @@
         <section class="ts-section ts-latest-albums">
             <header class="ts-section-heading">
                 <h2>Latest Albums</h2>
-                <a class="ts-section-link" href="{{ route('pages.album') }}">View all →</a>
             </header>
-
+        
             <div class="ts-albums-grid">
                 @forelse ($albums as $row)
-                    @include('pages.partials.album-card')
+                    <a
+                        class="ts-album-card"
+                        href="{{ \App\Support\AlbumUrl::detail($row) }}"
+                        style="color: inherit; text-decoration: none;"
+                    >
+                        <div class="ts-album-cover">
+                            <span class="ts-cover-placeholder" aria-hidden="true">
+                                TS
+                            </span>
+        
+                            @if ($row->cover_url)
+                                <img
+                                    loading="lazy"
+                                    src="{{ asset('images/' . ltrim($row->cover_url, '/')) }}"
+                                    alt="{{ $row->title }} album cover"
+                                    onerror="this.remove()"
+                                >
+                            @endif
+                        </div>
+        
+                        <div class="ts-album-details">
+                            <div class="ts-album-artist">
+                                {{ $row->ArtistsName ?: $row->Stage_Name }}
+                            </div>
+                        
+                            <span class="ts-album-title">
+                                {{ $row->title }}
+                            </span>
+                        
+                            <div class="ts-album-meta-row">
+                                {{ $row->released_year }}
+                            </div>
+                        </div>
+                    </a>
                 @empty
                     <p>No albums found.</p>
                 @endforelse
             </div>
+            
+             <p class="ts-section-button">
+                <a href="{{ route('pages.album') }}">View all Albums →</a>
+            </p>
         </section>
 
         <section class="ts-section ts-djmix-section">

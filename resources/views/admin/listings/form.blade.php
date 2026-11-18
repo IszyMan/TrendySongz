@@ -169,18 +169,21 @@
     </label>
 
     <label class="admin-wide">
-        Media file (200 MB maximum)
-
+        File name
+    
         <input
-            type="file"
-            name="media"
+            type="text"
+            name="TrackUrl"
             id="listing-media"
+            maxlength="5000"
+            value="{{ old('TrackUrl', $row->TrackUrl ?? '') }}"
+            placeholder="E.g Song-Name-(TrendySongz.com).mp3"
             @required(! $editing)
         >
-
-        @if ($editing && $row->TrackUrl)
+    
+        @if ($editing)
             <span class="admin-file-note">
-                Current: {{ $row->TrackUrl }}. Leave empty to keep it.
+                Leave empty to keep the current file name.
             </span>
         @endif
     </label>
@@ -220,27 +223,34 @@
 
     <input type="hidden" name="isgospel" value="0">
 
-    <label class="admin-check">
-        <input
-            type="checkbox"
-            name="isgospel"
-            value="1"
-            @checked(old('isgospel', $row->isgospel ?? 0))
-        >
-        Gospel
-    </label>
-
-    <input type="hidden" name="publish" value="0">
-
-    <label class="admin-check">
-        <input
-            type="checkbox"
-            name="publish"
-            value="1"
-            @checked(old('publish', isset($row) && $row->IsPublished === 'YES'))
-        >
-        Published
-    </label>
+    <div
+        class="admin-wide"
+        style="display: flex; flex-direction: column; gap: 12px;"
+    >
+        <input type="hidden" name="isgospel" value="0">
+    
+        <label class="admin-check">
+            <input
+                type="checkbox"
+                name="isgospel"
+                value="1"
+                @checked(old('isgospel', $row->isgospel ?? 0))
+            >
+            Gospel
+        </label>
+    
+        <input type="hidden" name="publish" value="0">
+    
+        <label class="admin-check">
+            <input
+                type="checkbox"
+                name="publish"
+                value="1"
+                @checked(old('publish', isset($row) && $row->IsPublished === 'YES'))
+            >
+            Published
+        </label>
+    </div>
 
     <div class="admin-wide">
         <button class="admin-button" type="submit">

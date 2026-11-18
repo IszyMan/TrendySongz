@@ -34,20 +34,17 @@
                 @foreach ($mixes as $mix)
                     @php
                         $djName = $mix->dj_name ?: 'TrendySongz DJ';
-
-                        $mixSlug = $mix->slug
-                            ?: \Illuminate\Support\Str::slug($djName . ' ' . $mix->mix_title);
                     @endphp
 
                     <a
                         class="ts-djmix-card"
-                        href="{{ route('pages.djmix_detail', [$mix->id, $mixSlug]) }}"
+                        href="{{ \App\Support\DjMixUrl::detail($mix) }}"
                         aria-label="View {{ $djName }} - {{ $mix->mix_title }}"
                     >
                         <div class="ts-djmix-cover">
                             @include('pages.partials.cover', [
                                 'src' => $mix->cover_url,
-                                'folder' => '',
+                                'folder' => 'dj/',
                             ])
 
                             <span class="ts-djmix-play" aria-hidden="true">
@@ -94,7 +91,7 @@
             </div>
 
             @if ($mixes->hasPages())
-                <div class="ts-djmix-pagination">
+                <div class="ts-list-pagination">
                     {{ $mixes->links('vendor.pagination.trendysongz') }}
                 </div>
             @endif
